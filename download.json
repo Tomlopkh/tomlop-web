@@ -1,10 +1,9 @@
 {
-  "released": false,
-  "note": "Written by scripts/release.sh in tomlop-mobile-android. Until a release exists, the download page shows its not-yet state.",
-  "version": null,
-  "apkUrl": null,
-  "bytes": null,
-  "sha256": null,
-  "releasedAt": null,
+  "released": true,
+  "version": "1.0.0",
+  "apkUrl": "https://github.com/Tomlopkh/tomlop-web/releases/download/v1.0.0/tomlop-1.0.0.apk",
+  "bytes": 9043731,
+  "sha256": "4c1f10eeaa57495fe6989124617a5e3274b430c4ddd6452437761bd65c5e48f9",
+  "releasedAt": "2026-09-20T15:02:34Z",
   "minAndroid": "8.0"
 }
