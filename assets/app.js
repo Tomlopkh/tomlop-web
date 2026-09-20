@@ -84,5 +84,46 @@
     });
   });
 
+  /* ---- download state ---- */
+
+  /* Read from a static file rather than the GitHub API: same origin, no rate
+     limit, and the page still renders its not-yet state if the fetch fails. */
+  function drawDownload() {
+    var host = document.getElementById('download-state');
+    if (!host || !host.dataset.release) return;
+    var d = JSON.parse(host.dataset.release);
+    var en = root.getAttribute('data-lang') === 'en';
+    var mb = (d.bytes / 1048576).toFixed(1);
+    host.className = 'release-ready';
+    host.innerHTML =
+      '<a class="btn" href="' + d.apkUrl + '">' +
+        (en ? 'Download ' + d.version : 'ទាញយក ' + d.version) +
+      '</a>' +
+      '<p class="aside-note">' +
+        (en ? mb + ' MB · Android ' + d.minAndroid + ' and above'
+            : mb + ' MB · Android ' + d.minAndroid + ' ឡើងទៅ') +
+      '</p>' +
+      '<p class="hash"><span>SHA-256</span><code>' + d.sha256 + '</code></p>';
+  }
+
+  var dl = document.getElementById('download-state');
+  if (dl) {
+    fetch(dl.dataset.src || '../download.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.released && d.apkUrl) {
+          dl.dataset.release = JSON.stringify(d);
+          drawDownload();
+        }
+      })
+      .catch(function () { /* leave the not-yet state in place */ });
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (dl.dataset.release) drawDownload();
+      });
+    });
+  }
+
   setLang(initial);
 }());

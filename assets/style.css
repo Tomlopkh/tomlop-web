@@ -117,13 +117,22 @@ a:hover { color: var(--ink); }
 
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
 
-/* Not a button — nothing to press yet. A status, stated plainly. */
+.btn {
+  display: inline-block; padding: 0.8rem 1.6rem; border-radius: 14px;
+  background: var(--green); color: var(--on-green);
+  text-decoration: none; font-weight: 600;
+}
+.btn:hover { background: var(--green-deep); color: var(--on-green); }
+
+/* A quiet chip with a saffron dot: a status or a soft entry point,
+   never competing with the primary action. */
 .soon {
   display: inline-flex; align-items: center; gap: 0.6rem;
   padding: 0.6rem 1.1rem; border-radius: 999px;
   border: 1px solid var(--rule); color: var(--ink-soft);
-  font-size: 0.9375rem;
+  font-size: 0.9375rem; text-decoration: none;
 }
+a.soon:hover { border-color: var(--green); color: var(--green); }
 .soon::before {
   content: ""; width: 7px; height: 7px; border-radius: 50%;
   background: var(--saffron); flex: none;
@@ -304,3 +313,39 @@ a:hover { color: var(--ink); }
 .pager-dir { font-size: 0.8125rem; color: var(--ink-faint); }
 .pager-title { font-family: var(--serif); color: var(--green); }
 .pager a:hover .pager-title { color: var(--ink); }
+
+/* ---------- download ---------- */
+
+.download { max-width: 42rem; }
+.download h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); margin-bottom: 1rem; }
+.download h2 {
+  font-size: 1.1875rem; margin: 2.75rem 0 0.9rem;
+  padding-top: 1.75rem; border-top: 1px solid var(--rule);
+}
+.download p { color: var(--ink-soft); }
+
+.release-pending, .release-ready { margin: 2rem 0 0; }
+.release-ready .btn { margin-bottom: 0.9rem; }
+
+.hash {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
+  margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 1px solid var(--rule);
+  font-size: 0.8125rem;
+}
+.hash span { color: var(--ink-faint); }
+.hash code { word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.steps { padding-inline-start: 1.25rem; }
+.steps li { margin-bottom: 0.7rem; color: var(--ink-soft); }
+
+.download code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em; background: var(--paper-shade);
+  padding: 0.1em 0.35em; border-radius: 4px;
+}
+.cmd {
+  background: var(--paper-shade); border: 1px solid var(--rule);
+  border-radius: 10px; padding: 0.85rem 1rem; overflow-x: auto;
+  font-size: 0.875rem; margin: 0 0 1.25rem;
+}
+.cmd code { background: none; padding: 0; }

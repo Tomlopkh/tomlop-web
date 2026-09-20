@@ -6,6 +6,8 @@ The website for **ទម្លាប់ / Tomlop**, the Khmer-first offline habi
 |---|---|
 | `index.html` | Landing page, Khmer-first with an English toggle |
 | `privacy/` | Privacy policy — the URL Google Play requires |
+| `download/` | APK download page, driven by `download.json` |
+| `download.json` | Written by `scripts/release.sh` in the app repo; `released: false` until a build is published |
 | `read/` | The 86 articles as web pages, generated |
 | `library/` | The same articles as Markdown, plus `library.json` — the feed the app will sync from |
 | `scripts/build-library.py` | Regenerates `library.json` and `read/` from `library/articles/*.md` |
@@ -33,3 +35,11 @@ python3 scripts/build-library.py
 - Replace `CONTACT_EMAIL` in `privacy/index.html` with a real address.
 - Have a native Khmer reader proofread both pages.
 - Point the Play Store listing's privacy policy field at `/privacy/`.
+
+## Releases
+
+The Android source repo is private, so a release asset there is not publicly downloadable.
+Signed APKs are published to **this** repo's GitHub Releases instead, and `scripts/release.sh`
+in `tomlop-mobile-android` updates `download.json` to point at the newest one. The download
+page reads that file, so it needs no API call and no rate limit — and it keeps rendering its
+not-yet state if the file is missing or the fetch fails.

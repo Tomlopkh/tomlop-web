@@ -115,6 +115,7 @@ def tail(depth):
   <footer class="foot">
     <nav>
       <a href="{up}"><span class="km">ទំព័រដើម</span><span class="en">Home</span></a>
+      <a href="{up}download/"><span class="km">ទាញយក</span><span class="en">Download</span></a>
       <a href="{up}read/"><span class="km">បណ្ណាល័យ</span><span class="en">Library</span></a>
       <a href="{up}privacy/"><span class="km">គោលការណ៍ឯកជនភាព</span><span class="en">Privacy policy</span></a>
     </nav>

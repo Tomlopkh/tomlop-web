@@ -1,0 +1,10 @@
+{
+  "released": false,
+  "note": "Written by scripts/release.sh in tomlop-mobile-android. Until a release exists, the download page shows its not-yet state.",
+  "version": null,
+  "apkUrl": null,
+  "bytes": null,
+  "sha256": null,
+  "releasedAt": null,
+  "minAndroid": "8.0"
+}
