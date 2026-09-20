@@ -82,10 +82,42 @@
     <li><span class="km"><strong>ការកំណត់</strong> (ភាសា ពន្លឺផ្ទាំង ម៉ោងរំលឹក អត្ថបទដែលអានរួច) អាចត្រូវបានរួមបញ្ចូលក្នុងការបម្រុងទុក Android ស្ដង់ដារ។ ប្រសិនបើអ្នកបានបើកមុខងារបម្រុងទុករបស់ Google ទិន្នន័យនេះនឹងទៅកាន់គណនី Google Drive <em>របស់អ្នកផ្ទាល់</em> ដែលអ៊ិនគ្រីបដោយកូដសម្ងាត់ឧបករណ៍របស់អ្នក។ យើងមិនអាចចូលប្រើវាបានទេ។ អ្នកអាចបិទវានៅក្នុងការកំណត់ Android។</span><span class="en"><strong>Settings</strong> — language, theme, reminder times and which articles you have read — may be included in Android's standard backup. If you have Google Backup switched on, this goes to <em>your own</em> Google Drive, encrypted with your device PIN. We cannot access it. You can turn it off in Android settings.</span></li>
   </ul>
 
-  <h2><span class="km">៥. ការជូនដំណឹង</span><span class="en">5. Notifications</span></h2>
+  <h2><span class="km">៥. សិទ្ធិដែលកម្មវិធីស្នើសុំ</span><span class="en">5. Permissions the app declares</span></h2>
   <p>
-    <span class="km">កម្មវិធីស្នើសុំសិទ្ធិ <code>POST_NOTIFICATIONS</code> ដើម្បីរំលឹកអ្នកអំពីទម្លាប់តាមម៉ោងដែលអ្នកជ្រើសរើស។ ការជូនដំណឹងទាំងអស់ត្រូវបានកំណត់ពេល និងបង្កើតឡើងនៅក្នុងទូរស័ព្ទរបស់អ្នក។ គ្មានការជូនដំណឹងណាមួយមកពីម៉ាស៊ីនមេទេ។ អ្នកអាចបដិសេធសិទ្ធិនេះ ហើយកម្មវិធីនៅតែដំណើរការធម្មតា។</span>
-    <span class="en">The app requests <code>POST_NOTIFICATIONS</code> so it can remind you about habits at times you choose. Every notification is scheduled and generated on your device; none is pushed from a server. You may decline the permission and the app still works normally.</span>
+    <span class="km">ប្រសិនបើអ្នកពិនិត្យបញ្ជីសិទ្ធិរបស់កម្មវិធី អ្នកនឹងឃើញសិទ្ធិច្រើនជាងមួយ។ នេះជាការពន្យល់ពេញលេញ៖</span>
+    <span class="en">If you inspect the app's permission list you will see more than one entry. Here is the complete account:</span>
+  </p>
+  <ul>
+    <li>
+      <span class="km"><code>POST_NOTIFICATIONS</code> — ដើម្បីរំលឹកអ្នកអំពីទម្លាប់តាមម៉ោងដែលអ្នកជ្រើសរើស។ អ្នកអាចបដិសេធសិទ្ធិនេះ ហើយកម្មវិធីនៅតែដំណើរការធម្មតា។</span>
+      <span class="en"><code>POST_NOTIFICATIONS</code> — to remind you about habits at times you choose. You may decline it and the app still works normally.</span>
+    </li>
+  </ul>
+  <p>
+    <span class="km">សិទ្ធិបួនខាងក្រោម ត្រូវបានបន្ថែមដោយស្វ័យប្រវត្តិពីបណ្ណាល័យ <code>androidx.work</code> (WorkManager) ដែលជាឧបករណ៍កំណត់ពេលរំលឹកក្នុងតំបន់។ យើងមិនបានសរសេរវាដោយផ្ទាល់ទេ ប៉ុន្តែវាស្ថិតនៅក្នុងកម្មវិធី ដូច្នេះយើងរាយវាជូន៖</span>
+    <span class="en">The four below are added automatically by the <code>androidx.work</code> (WorkManager) library that schedules those local reminders. We did not write them ourselves, but they are in the app, so they are listed here:</span>
+  </p>
+  <ul>
+    <li>
+      <span class="km"><code>WAKE_LOCK</code> — អនុញ្ញាតឲ្យការរំលឹកដែលបានកំណត់ពេល បញ្ចប់ការងារពេលអេក្រង់រលត់។</span>
+      <span class="en"><code>WAKE_LOCK</code> — lets a scheduled reminder finish while the screen is off.</span>
+    </li>
+    <li>
+      <span class="km"><code>ACCESS_NETWORK_STATE</code> — WorkManager អានស្ថានភាពការតភ្ជាប់ ដើម្បីសម្រេចថាពេលណាត្រូវដំណើរការការងារ។ ទម្លាប់ មិនដែលកំណត់ពេលការងារដែលត្រូវការបណ្ដាញទេ។ សិទ្ធិនេះ<strong>អាន</strong>ស្ថានភាពតែប៉ុណ្ណោះ វាមិនអាចផ្ញើ ឬទទួលទិន្នន័យបានទេ។</span>
+      <span class="en"><code>ACCESS_NETWORK_STATE</code> — WorkManager reads connectivity status to decide when to run work. Tomlop never schedules work that needs a network. This permission only <strong>reads</strong> status; it cannot send or receive data.</span>
+    </li>
+    <li>
+      <span class="km"><code>RECEIVE_BOOT_COMPLETED</code> — ចុះឈ្មោះការរំលឹករបស់អ្នកឡើងវិញ បន្ទាប់ពីបើកទូរស័ព្ទឡើងវិញ ដូច្នេះការរំលឹកមិនបាត់ទេ។</span>
+      <span class="en"><code>RECEIVE_BOOT_COMPLETED</code> — re-registers your reminders after a restart, so they survive rebooting the phone.</span>
+    </li>
+    <li>
+      <span class="km"><code>FOREGROUND_SERVICE</code> — WorkManager អាចប្រើវាសម្រាប់ការងារវែង។ ការរំលឹករបស់ ទម្លាប់ គឺខ្លីៗ។</span>
+      <span class="en"><code>FOREGROUND_SERVICE</code> — WorkManager may use one for long-running work. Tomlop's reminders are short.</span>
+    </li>
+  </ul>
+  <p>
+    <span class="km"><strong>សិទ្ធិ <code>INTERNET</code> មិនមានក្នុងបញ្ជីនេះទេ។</strong> បើគ្មានវា Android រារាំងការចូលប្រើបណ្ដាញទាំងអស់នៅកម្រិតប្រព័ន្ធប្រតិបត្តិការ ដោយមិនគិតពីកូដដែលកម្មវិធីមាននោះឡើយ។</span>
+    <span class="en"><strong><code>INTERNET</code> is absent from that list.</strong> Without it, Android blocks all network access at the operating-system level, whatever code the app contains.</span>
   </p>
 
   <h2><span class="km">៦. កុមារ</span><span class="en">6. Children</span></h2>

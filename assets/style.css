@@ -247,6 +247,11 @@ a:hover { color: var(--ink); }
 .prose ul { padding-inline-start: 1.15rem; }
 .prose li { margin-bottom: 0.5rem; }
 .prose strong { color: var(--ink); font-weight: 600; }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em; background: var(--paper-shade);
+  padding: 0.1em 0.35em; border-radius: 4px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
