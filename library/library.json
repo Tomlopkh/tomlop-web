@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-20T14:03:17Z",
+  "minAppVersionCode": 2,
+  "note": "PLACEHOLDER FEED. The 86 shipped articles are bundled in the APK and are deliberately not published here yet.",
+  "articles": [
+    {
+      "id": "87-sample-placeholder",
+      "path": "articles/87-sample-placeholder.md",
+      "titleEn": "Sample Placeholder",
+      "titleKm": "ឧទាហរណ៍គំរូ",
+      "bytes": 1606,
+      "sha256": "b5fc56fec65a3857d0ec809ea8637dfa5f763e7e29d14204ae45555ba1b9b700",
+      "publishedAt": "2026-09-20"
+    }
+  ]
+}

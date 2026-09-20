@@ -1,0 +1,253 @@
+/* Tomlop — the almanac page.
+   Tokens mirror the Android app's DESIGN.md so both surfaces stay one brand. */
+
+:root {
+  --paper:        #FFFBF2;
+  --paper-shade:  #F3EFE6;
+  --rule:         #E3DCCB;
+  --ink:          #14231D;
+  --ink-soft:     #4B5B53;
+  --ink-faint:    #707F77;
+  --green:        #176B45;
+  --green-deep:   #0D3524;
+  --green-wash:   #D4F3DF;
+  --saffron:      #F5C95B;
+  --saffron-deep: #765D08;
+  --on-green:     #FFFBF2;
+
+  --shell: 68rem;
+  --gutter: clamp(1rem, 5vw, 3rem);
+
+  --serif: "Noto Serif Khmer", Georgia, serif;
+  --sans:  "Kantumruy Pro", "Noto Sans Khmer", system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:       #101A16;
+    --paper-shade: #16231E;
+    --rule:        #28322E;
+    --ink:         #EDF2EE;
+    --ink-soft:    #A8B4AE;
+    --ink-faint:   #8A968F;
+    --green:       #6EB58F;
+    --green-deep:  #9FD6B7;
+    --green-wash:  #122C21;
+    --on-green:    #08120D;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Khmer needs more room between lines than Latin. */
+:lang(km) { line-height: 1.95; }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.5; margin: 0; }
+
+a { color: var(--green); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { color: var(--ink); }
+
+:focus-visible { outline: 2.5px solid var(--saffron); outline-offset: 3px; border-radius: 2px; }
+
+.shell { max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter); }
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--paper);
+  padding: 0.6rem 1rem; border-radius: 4px; z-index: 10;
+}
+.skip:focus { left: 1rem; top: 1rem; }
+
+/* Language switch: both languages live in the DOM; one is hidden. */
+[data-lang="km"] .en { display: none; }
+[data-lang="en"] .km { display: none; }
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding-block: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.brand { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: inherit; }
+.brand img { width: 34px; height: 34px; border-radius: 9px; display: block; }
+.brand b { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; }
+
+.langs { display: flex; gap: 0.125rem; }
+.langs button {
+  font: inherit; font-size: 0.875rem;
+  background: none; border: 0; cursor: pointer;
+  color: var(--ink-faint); padding: 0.35rem 0.6rem; border-radius: 999px;
+}
+.langs button[aria-pressed="true"] { color: var(--ink); background: var(--paper-shade); }
+
+/* ---------- hero: today's page ---------- */
+
+.hero {
+  display: grid;
+  gap: clamp(2.25rem, 5vw, 4rem);
+  padding-block: clamp(2rem, 6vw, 3.75rem) clamp(2.25rem, 6vw, 3.5rem);
+}
+
+/* On a wide screen the copy sits beside the page, rather than leaving
+   half the viewport empty. */
+@media (min-width: 62rem) {
+  .hero { grid-template-columns: 1fr minmax(21rem, 27rem); align-items: start; }
+}
+
+.hero h1 {
+  font-size: clamp(1.75rem, 5vw, 2.625rem);
+  max-width: 22ch; margin-bottom: 1.5rem;
+}
+
+.hero-lede { color: var(--ink-soft); max-width: 44ch; margin: 0 0 2.25rem; }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
+
+/* Not a button — nothing to press yet. A status, stated plainly. */
+.soon {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1.1rem; border-radius: 999px;
+  border: 1px solid var(--rule); color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+.soon::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--saffron); flex: none;
+}
+
+.aside-note { font-size: 0.9375rem; color: var(--ink-faint); margin: 0; }
+
+/* The page itself: a leaf out of an almanac. */
+.today-page {
+  background: var(--paper-shade);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.4rem;
+}
+
+.dateline {
+  font-family: var(--serif); font-size: 0.9375rem;
+  color: var(--ink-faint);
+  margin: 0 0 0.35rem; padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ledger { margin-bottom: 1rem; }
+
+.row {
+  display: flex; align-items: center; gap: 0.875rem; width: 100%;
+  padding: 0.85rem 0.35rem;
+  border: 0; border-bottom: 1px solid var(--rule);
+  background: none; color: inherit; font: inherit; text-align: start;
+  cursor: pointer; border-radius: 8px;
+  transition: background-color 160ms ease;
+}
+.row:last-of-type { border-bottom: 0; }
+.row:hover { background: var(--paper); }
+
+.stamp {
+  flex: none; width: 27px; height: 27px; border-radius: 50%;
+  border: 2px solid var(--rule);
+  display: grid; place-items: center;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 260ms cubic-bezier(.2,1.4,.4,1);
+}
+.stamp svg { width: 15px; height: 15px; opacity: 0; transform: scale(.5); transition: opacity 160ms ease, transform 200ms ease; }
+
+.row[aria-pressed="true"] .stamp {
+  background: var(--saffron); border-color: var(--saffron); transform: scale(1.06);
+}
+.row[aria-pressed="true"] .stamp svg { opacity: 1; transform: scale(1); }
+.row[aria-pressed="true"] .row-label { color: var(--ink-faint); }
+
+.row-label { flex: 1; }
+.row-meta { font-size: 0.8125rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+.tally {
+  font-family: var(--serif); font-size: 0.9375rem; color: var(--ink-soft);
+  margin: 0; padding-top: 0.9rem; border-top: 1px solid var(--rule);
+}
+.tally b { color: var(--green); font-weight: 600; }
+
+/* ---------- ruled sections ---------- */
+
+/* Sections each sit in their own .shell, so the rule goes on the band
+   itself. It then aligns with the content rather than bleeding full-width. */
+.band {
+  padding-block: clamp(2.25rem, 6vw, 3.75rem);
+  border-top: 1px solid var(--rule);
+}
+/* No hairline directly under the green field. */
+.band--flush { border-top: 0; }
+
+.band > h2 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  margin-bottom: 2rem; max-width: 26ch;
+}
+
+/* A ledger of claims, not a grid of cards. */
+.entries { border-top: 1px solid var(--rule); }
+
+.entry {
+  display: grid; gap: 0.25rem 2.5rem;
+  grid-template-columns: minmax(9rem, 14rem) 1fr;
+  padding-block: 1.4rem;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.entry dt { font-family: var(--serif); font-size: 1.0625rem; }
+.entry dd { margin: 0; color: var(--ink-soft); max-width: 52ch; }
+
+@media (max-width: 34rem) {
+  .entry { grid-template-columns: 1fr; gap: 0.35rem; }
+}
+
+/* ---------- the one bold moment: privacy ---------- */
+
+.pledge { background: var(--green); color: var(--on-green); }
+.pledge .shell { padding-block: clamp(2.75rem, 8vw, 4.5rem); }
+.pledge h2 { font-size: clamp(1.5rem, 4.5vw, 2.125rem); max-width: 22ch; margin-bottom: 1.25rem; }
+.pledge p { max-width: 50ch; margin: 0 0 1.5rem; opacity: .92; }
+.pledge a { color: var(--on-green); }
+.pledge .facts { list-style: none; padding: 0; margin: 0 0 1.75rem; max-width: 40rem; }
+.pledge .facts li {
+  padding: 0.7rem 0; border-top: 1px solid rgba(255,251,242,.22);
+}
+.pledge .facts li:last-child { border-bottom: 1px solid rgba(255,251,242,.22); }
+
+/* ---------- footer ---------- */
+
+.foot { padding-block: 2.5rem 3.5rem; color: var(--ink-faint); font-size: 0.9375rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; margin-bottom: 1.25rem; }
+.foot p { margin: 0; max-width: 50ch; }
+
+/* ---------- prose (privacy policy) ---------- */
+
+.prose { padding-block: clamp(2rem, 6vw, 3.5rem) 4rem; max-width: 42rem; }
+.prose h1 { font-size: clamp(1.625rem, 4.5vw, 2.25rem); margin-bottom: 0.5rem; }
+.prose .updated { color: var(--ink-faint); font-size: 0.9375rem; margin: 0 0 2.5rem; }
+.prose h2 {
+  font-size: 1.1875rem; margin: 2.5rem 0 0.75rem;
+  padding-top: 1.5rem; border-top: 1px solid var(--rule);
+}
+.prose p, .prose li { color: var(--ink-soft); }
+.prose ul { padding-inline-start: 1.15rem; }
+.prose li { margin-bottom: 0.5rem; }
+.prose strong { color: var(--ink); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
