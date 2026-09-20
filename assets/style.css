@@ -256,3 +256,51 @@ a:hover { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- reading library ---------- */
+
+.library-title { font-size: clamp(1.75rem, 5vw, 2.5rem); margin-bottom: 1rem; }
+
+/* The corpus is numbered 01–86 in the app, so the numbers carry real
+   information here rather than decorating the list. */
+.index { list-style: none; margin: 2rem 0 0; padding: 0; border-top: 1px solid var(--rule); }
+
+.index-row { border-bottom: 1px solid var(--rule); }
+.index-row a {
+  display: grid; align-items: baseline; gap: 0.15rem 1.25rem;
+  grid-template-columns: 2.5rem 1fr auto;
+  padding: 1rem 0.35rem; text-decoration: none; color: inherit;
+  border-radius: 8px;
+}
+.index-row a:hover { background: var(--paper-shade); }
+
+.index-num { font-family: var(--serif); color: var(--ink-faint); font-size: 0.9375rem; }
+.index-titles { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.index-titles b { font-family: var(--serif); font-weight: 600; }
+.index-titles i { font-style: normal; font-size: 0.875rem; color: var(--ink-faint); }
+.index-min { font-size: 0.8125rem; color: var(--ink-faint); white-space: nowrap; }
+
+@media (max-width: 30rem) {
+  .index-row a { grid-template-columns: 2rem 1fr; }
+  .index-min { grid-column: 2; }
+}
+
+/* ---------- one article ---------- */
+
+.article { max-width: 40rem; }
+.article .kicker {
+  font-size: 0.9375rem; color: var(--ink-faint); margin: 0 0 0.4rem;
+}
+.article h1 { font-size: clamp(1.625rem, 4.5vw, 2.25rem); margin-bottom: 0.5rem; }
+.article p, .article li { color: var(--ink-soft); }
+.article > p { margin: 0 0 1.15rem; }
+
+.pager {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+}
+.pager a { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; }
+.pager-next { text-align: end; }
+.pager-dir { font-size: 0.8125rem; color: var(--ink-faint); }
+.pager-title { font-family: var(--serif); color: var(--green); }
+.pager a:hover .pager-title { color: var(--ink); }

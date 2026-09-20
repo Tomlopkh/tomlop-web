@@ -6,7 +6,9 @@ The website for **ទម្លាប់ / Tomlop**, the Khmer-first offline habi
 |---|---|
 | `index.html` | Landing page, Khmer-first with an English toggle |
 | `privacy/` | Privacy policy — the URL Google Play requires |
-| `library/` | Static article feed scaffold (not yet read by the app) |
+| `read/` | The 86 articles as web pages, generated |
+| `library/` | The same articles as Markdown, plus `library.json` — the feed the app will sync from |
+| `scripts/build-library.py` | Regenerates `library.json` and `read/` from `library/articles/*.md` |
 | `docs/feed-schema.md` | Feed format and the sync rules it must follow |
 | `assets/` | Stylesheet, script, and the ទ brand mark |
 
@@ -18,6 +20,12 @@ No toolchain. Open `index.html`, or serve the folder:
 
 ```sh
 python3 -m http.server 8000
+```
+
+After adding or editing an article, regenerate the index and pages:
+
+```sh
+python3 scripts/build-library.py
 ```
 
 ## Before launch
