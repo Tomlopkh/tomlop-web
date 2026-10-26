@@ -55,7 +55,7 @@ onMounted(async () => {
   <ol class="steps">
     <li><span class="km">ទាញយកឯកសារ <code>.apk</code> ខាងលើ។</span><span class="en">Download the <code>.apk</code> above.</span></li>
     <li><span class="km">បើកឯកសារនោះ។ Android នឹងសួរថាតើអនុញ្ញាតឲ្យដំឡើងពីប្រភពនេះដែរឬទេ — សូមចុច <strong>អនុញ្ញាត</strong> រួចបន្ត។</span><span class="en">Open it. Android will ask whether to allow installs from this source — choose <strong>allow</strong>, then continue.</span></li>
-    <li><span class="km">ប្រសិនបើអ្នកធ្លាប់ដំឡើងពីមុន សូមកុំលុបកម្មវិធីចាស់ចេញ បើមិនដូច្នេះទេ ទិន្នន័យរបស់អ្នកនឹងបាត់។ ការធ្វើបច្ចុប្បន្នភាពនៅពីលើគ្នា រក្សាទិន្នន័យទុកដដែល។</span><span class="en">If you already have it, do not uninstall first — that erases your data. Installing over the top keeps it.</span></li>
+    <li><span class="km">ប្រសិនបើអ្នកធ្លាប់ដំឡើង <strong>1.0.0</strong> កំណែនេះចុះហត្ថលេខាដោយសោថ្មី ដូច្នេះ Android មិនអាចដំឡើងពីលើបានទេ៖ សូមលុប 1.0.0 ចេញជាមុន (ទិន្នន័យក្នុងកម្មវិធីចាស់នឹងបាត់) រួចដំឡើងកំណែនេះ។ បើអ្នកមិនធ្លាប់ដំឡើង 1.0.0 ទេ គ្មានអ្វីត្រូវធ្វើបន្ថែម។</span><span class="en">If you installed <strong>1.0.0</strong>, this build is signed with a new key, so Android cannot install it over the old one: uninstall 1.0.0 first (its in-app data is lost), then install this. If you never installed 1.0.0, there is nothing extra to do.</span></li>
   </ol>
 
   <h2><span class="km">ផ្ទៀងផ្ទាត់ឯកសារ</span><span class="en">Verify the file</span></h2>
