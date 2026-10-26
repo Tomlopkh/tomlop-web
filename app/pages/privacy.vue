@@ -69,6 +69,10 @@ useSeoMeta({
       <span class="km"><code>POST_NOTIFICATIONS</code> — ដើម្បីរំលឹកអ្នកអំពីទម្លាប់តាមម៉ោងដែលអ្នកជ្រើសរើស។ អ្នកអាចបដិសេធសិទ្ធិនេះ ហើយកម្មវិធីនៅតែដំណើរការធម្មតា។</span>
       <span class="en"><code>POST_NOTIFICATIONS</code> — to remind you about habits at times you choose. You may decline it and the app still works normally.</span>
     </li>
+    <li>
+      <span class="km"><code>VIBRATE</code> — ដើម្បីញ័រទូរស័ព្ទ នៅពេលអ្នកបំពេញទម្លាប់ ឬបញ្ចប់ជំហានមួយ។ សិទ្ធិនេះមិនអាន និងមិនផ្ញើទិន្នន័យអ្វីទេ។</span>
+      <span class="en"><code>VIBRATE</code> — to vibrate the phone when you complete a habit or finish a step. It reads and sends nothing.</span>
+    </li>
   </ul>
   <p>
     <span class="km">សិទ្ធិបួនខាងក្រោម ត្រូវបានបន្ថែមដោយស្វ័យប្រវត្តិពីបណ្ណាល័យ <code>androidx.work</code> (WorkManager) ដែលជាឧបករណ៍កំណត់ពេលរំលឹកក្នុងតំបន់។ យើងមិនបានសរសេរវាដោយផ្ទាល់ទេ ប៉ុន្តែវាស្ថិតនៅក្នុងកម្មវិធី ដូច្នេះយើងរាយវាជូន៖</span>
