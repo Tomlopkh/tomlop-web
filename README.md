@@ -54,6 +54,5 @@ newest one. The download page reads that file, so it needs no API call and keeps
 
 ## Before launch
 
-- Replace `CONTACT_EMAIL` in `app/pages/privacy.vue` with a real address.
 - Have a native Khmer reader proofread the privacy page and landing page, including the wording added for article updates.
 - Point the Play listing's privacy policy field at `/privacy`.

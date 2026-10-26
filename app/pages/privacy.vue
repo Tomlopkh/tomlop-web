@@ -22,8 +22,8 @@ useSeoMeta({
 
   <h2><span class="km">១. អ្នកណាជាអ្នកទទួលខុសត្រូវ</span><span class="en">1. Who is responsible</span></h2>
   <p>
-    <span class="km">កម្មវិធី ទម្លាប់ ត្រូវបានបង្កើត និងចេញផ្សាយដោយ Tomlop KH។ សម្រាប់សំណួរអំពីគោលការណ៍នេះ សូមទាក់ទង៖ <strong>CONTACT_EMAIL</strong></span>
-    <span class="en">Tomlop is built and published by Tomlop KH. For questions about this policy, contact: <strong>CONTACT_EMAIL</strong></span>
+    <span class="km">កម្មវិធី ទម្លាប់ ត្រូវបានបង្កើត និងចេញផ្សាយដោយ Tomlop KH។ សម្រាប់សំណួរអំពីគោលការណ៍នេះ សូមទាក់ទង៖ <a href="mailto:chamrongthor.dev@gmail.com"><strong>chamrongthor.dev@gmail.com</strong></a></span>
+    <span class="en">Tomlop is built and published by Tomlop KH. For questions about this policy, contact: <a href="mailto:chamrongthor.dev@gmail.com"><strong>chamrongthor.dev@gmail.com</strong></a></span>
   </p>
 
   <h2><span class="km">២. ទិន្នន័យអ្វីខ្លះដែលត្រូវបានប្រមូល</span><span class="en">2. What data is collected</span></h2>
