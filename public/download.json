@@ -1,9 +1,9 @@
 {
   "released": true,
-  "version": "1.1.1",
-  "apkUrl": "https://github.com/Tomlopkh/tomlop-web/releases/download/v1.1.1/tomlop-1.1.1.apk",
-  "bytes": 9116427,
-  "sha256": "bf84f3f7307a4ecf8aec9f7d78001fa3b069ea9660d5d9d83304a2be7cb4cbf1",
-  "releasedAt": "2026-10-26T10:29:47Z",
+  "version": "1.2.0",
+  "apkUrl": "https://github.com/Tomlopkh/tomlop-web/releases/download/v1.2.0/tomlop-1.2.0.apk",
+  "bytes": 9146671,
+  "sha256": "97f367c2d85a54524fd26837c5237321c7f96f2528e4446eb262f76a98f02d91",
+  "releasedAt": "2026-10-26T11:20:05Z",
   "minAndroid": "8.0"
 }
