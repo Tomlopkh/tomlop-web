@@ -1,0 +1,43 @@
+@startuml fs_web_01_seq_discoverability
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-WEB-01 (proposed) — Public library discoverability
+autonumber "[00]"
+
+actor "Search engine\nor feed reader" as X #1E1B4B
+participant "Worker" as W #172554
+database "D1" as DB #052E16
+participant "Edge cache" as C #052E16
+
+X -> W : GET /robots.txt
+W --> X : allow /read, disallow /admin /api/admin /oauth /mcp
+X -> W : GET /sitemap.xml
+W -> C : lookup
+C --> W : miss
+W -> DB : published ids and updated_at only
+W --> X : sitemap of /read and each published article
+X -> W : GET /rss.xml
+W -> DB : latest 20 published, title, intro, link
+W --> X : feed with summaries and links, not full text
+X -> W : GET /read/ID/
+W --> X : page with title, description, canonical, Open Graph, structured data
+note over W, DB
+  Drafts, in-review and retired articles never appear anywhere here.
+  A test publishes, unpublishes and retires an article and checks all three files.
+end note
+@enduml

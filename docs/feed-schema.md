@@ -1,8 +1,10 @@
 # Article feed
 
-Static files on a CDN that let Tomlop publish and correct articles without shipping a Play Store update. It is **files, not an API** — no server, no database, no auth.
+Static files on a CDN that let Tomlop publish and correct articles without shipping a Play Store update. It is read-only and unauthenticated, shaped like files; writes go through the backoffice.
 
-Nothing in the Android app reads it yet. The web half is live; the client is not built.
+The Android app reads it (`LibrarySync.kt`, `LibraryFeed.kt` in the app repo) from version code 2 onward.
+
+The feed is **generated from a D1 database**, not hand-maintained: a Cloudflare Worker serves `/library/library.json` and `/library/articles/<id>.md`, and the backoffice (and AI connectors) edit the articles. See [MCP.md](MCP.md) and [DEPLOY.md](DEPLOY.md).
 
 ## The rule it must not break
 
@@ -11,23 +13,18 @@ The bundled corpus is the floor. The app ships all 86 articles inside the APK an
 ## Layout
 
 ```
-library/
-├── library.json                  index over every article
-└── articles/
-    ├── 01-perception-limits.md
-    └── …  86 files
-read/                             the same articles as web pages
-├── index.html
-└── <id>/index.html
+/library/library.json             index over every published article
+/library/articles/<id>.md         one article's Markdown, exactly what its sha256 covers
+/read/                            the same articles as web pages
+/read/<id>/
 ```
 
-Served from `https://tomlopkh.github.io/tomlop-web/library/library.json`.
-
-The same Markdown feeds both the app and the website, so an article is written once.
+`library/articles/*.md` in this repo is only the **seed**: `npm run db:seed` loads those 86 files
+into D1 once. After that the database is the source of truth.
 
 ## Article format
 
-Identical to the Markdown bundled in `app/src/main/assets/articles/`, so `parseReadingArticle` in `ReadingArticles.kt` needs no change:
+Identical to the Markdown bundled in `app/src/main/assets/articles/`, so `parseReadingArticle` in `ReadingArticles.kt` needs no change. One inline style exists, `**bold**` (every bundled article uses it to lead a bullet); the app renders it with `parseMarkdownBold` and the website with `splitBold` (`shared/utils/inline.ts`), which behave identically, including for an unbalanced marker.
 
 ```markdown
 # English Title / ចំណងជើងខ្មែរ
@@ -73,16 +70,17 @@ The cost is that step 3 must compare hashes, not just check for presence. A clie
 
 ## Publishing
 
-Add or edit the `.md`, then regenerate — never hand-edit `library.json`:
+Sign in at `/admin`, or connect an AI app at `/admin/integrations` (see [MCP.md](MCP.md)). Saving an
+article recomputes its `sha256`, `bytes` and reading time from the Markdown, so the feed can never
+disagree with the file. Unpublishing or deleting removes an article from the feed, but a phone that
+already downloaded it keeps its copy, and the 86 bundled ones stay in the app.
 
-```sh
-python3 scripts/build-library.py
-```
+`server/lib/markdown.ts` mirrors `parseReadingArticle`; its test (`server/lib/markdown.test.ts`)
+checks titles, reading minutes, byte counts and hashes of all 86 articles against `library/library.json`.
+If the parsers drift, that test fails.
 
-It rewrites `library/library.json` and every page under `read/`. Hand-editing the index produces a hash mismatch and a silently rejected article.
+## Privacy
 
-The generator's Markdown parser mirrors `parseReadingArticle`. If one starts accepting syntax the other does not, the same file renders differently in the app and on the web — keep them in step.
-
-## What this costs the app
-
-Adding sync means adding the `INTERNET` permission. That changes the Play Data safety declaration and makes the privacy policy's current claim — *"does not even request internet permission"* — untrue. `privacy/index.html` and the landing page both say it explicitly and must be rewritten in the same release. Do not ship the sync without that.
+The sync is the only reason the app declares `INTERNET`. It sends a plain HTTPS GET with a fixed
+`User-Agent: Tomlop`: no identifiers, no habit data. The privacy policy, the landing page, the
+download page and the Play Data safety answers all say so; keep them in step with any change here.

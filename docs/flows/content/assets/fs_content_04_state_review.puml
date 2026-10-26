@@ -1,0 +1,31 @@
+@startuml fs_content_04_state_review
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-CONTENT-04 (proposed) — Article states and who may move them
+
+[*] --> Draft : create (admin or connector)
+Draft --> InReview : request review (admin or connector)
+InReview --> Draft : send back with a note (admin)
+InReview --> Published : approve (admin only)
+Draft --> Published : publish (admin only)
+Published --> Draft : unpublish (admin only)
+Published --> Retired : withdraw from phones (admin only)
+Retired --> Draft : bring back (admin only)
+Draft --> [*] : delete (admin only)
+Published --> [*] : delete (admin only)
+@enduml

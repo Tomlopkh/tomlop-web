@@ -1,0 +1,45 @@
+@startuml fs_admin_02_seq_reviewer
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-ADMIN-02 (proposed, behind gate G-C) — A reviewer signs in through Cloudflare Access
+autonumber "[00]"
+
+actor "Reviewer" as R #1E1B4B
+participant "Cloudflare Access" as CA #3B0764
+participant "Worker" as W #172554
+database "D1" as DB #052E16
+
+R -> CA : opens /admin
+CA -> R : asks for their email, sends a one-time code
+R -> CA : enters the code
+CA -> W : request with Cf-Access-Jwt-Assertion (signed)
+W -> W : verify signature, issuer, audience and expiry against the team keys
+group Invalid, expired or missing
+  W --> R : 401
+end
+W -> W : email must be on the reviewer allow-list
+group Not on the list
+  W --> R : 403
+end
+W -> W : session role reviewer
+R -> W : list in-review articles, read, approve or send back
+W -> DB : state change with revision actor set to the reviewer email
+group Reviewer calls delete, disconnect, settings or publish of a draft not in review
+  W --> R : 403
+end
+@enduml

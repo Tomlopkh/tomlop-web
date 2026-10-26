@@ -1,0 +1,4 @@
+NUXT_SESSION_PASSWORD=local-dev-session-secret-0123456789abcdef-xyz
+NUXT_ADMIN_EMAIL=admin@example.com
+# generate with: npm run hash-password
+NUXT_ADMIN_PASSWORD_HASH=

@@ -1,0 +1,31 @@
+@startuml c4_tomlop_component
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Tomlop: components inside the Worker
+
+Container_Boundary(w, "Nitro server") {
+  Component(guard, "admin-guard", "middleware", "Same-origin check and session for every /api/admin call")
+  Component(login, "Sign-in", "handler", "Rate limit, constant-time email, scrypt, sealed cookie")
+  Component(adminApi, "Article handlers", "handlers", "List, create, update, delete")
+  Component(oauthApi, "OAuth endpoints", "handlers", "register, authorize, token, revoke, discovery")
+  Component(mcpRoute, "MCP route", "handler", "Bearer check, JSON-RPC dispatch")
+  Component(feedRoute, "Feed routes", "handlers", "Index and article Markdown")
+  Component(lib, "server/lib", "framework-free TypeScript", "articles (D1 + validation), feed, oauth, mcp (tools, guide, server)")
+  Component(shared, "shared/utils", "TypeScript", "article-format (parser, validator), inline bold splitter. Also runs in the browser.")
+  Component(utils, "server/utils", "Nitro utilities", "useDb, rateLimit, edge cache and purge, site origin")
+}
+ContainerDb(db, "D1", "SQLite")
+Container(cache, "Edge cache", "Cache API")
+
+Rel(guard, adminApi, "Allows")
+Rel(login, utils, "Rate limit")
+Rel(adminApi, lib, "Uses")
+Rel(mcpRoute, lib, "Dispatches tools")
+Rel(oauthApi, lib, "Uses")
+Rel(feedRoute, lib, "Uses")
+Rel(lib, shared, "Validates with")
+Rel(lib, db, "Reads and writes")
+Rel(feedRoute, cache, "Reads and fills")
+Rel(adminApi, cache, "Purges")
+Rel(mcpRoute, cache, "Purges")
+@enduml

@@ -1,0 +1,40 @@
+@startuml fs_web_02_seq_releases
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-WEB-02 (proposed) — Releases and the changelog page
+autonumber "[00]"
+
+actor "Developer" as D #1E1B4B
+participant "release.sh\n(app repo)" as RS #172554
+participant "GitHub Releases\n(web repo)" as GR #172554
+participant "tomlop-web repo" as WR #172554
+participant "Workers Builds" as WB #172554
+participant "Download page" as P #052E16
+
+D -> RS : scripts/release.sh VERSION --notes NOTES
+RS -> RS : build, verify the six permissions, compute sha256
+RS -> GR : create the release with the APK
+RS -> WR : PUT public/download.json (latest plus history entry with notes)
+WR -> WB : push triggers a deploy
+WB -> P : new static asset
+note over P
+  The page shows the newest version, its sha256, a short what's new,
+  and a list of earlier versions with their checksums.
+  If the file cannot be read, the page keeps its not-yet state.
+end note
+@enduml

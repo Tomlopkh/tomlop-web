@@ -1,0 +1,56 @@
+@startuml fs_admin_01_seq_sign_in
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+title FS-ADMIN-01 — Admin sign-in and session checks
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "Backoffice SPA" as UI #172554
+participant "Login endpoint" as L #172554
+participant "admin-guard\nmiddleware" as G #172554
+database "D1 rate_limits" as RL #052E16
+
+O -> UI : opens /admin (no session)
+UI -> UI : route middleware sees no session
+UI --> O : redirected to /admin/login with a safe next path
+
+== Sign in ==
+O -> UI : email and password
+UI -> L : POST /api/admin/auth/login
+G -> G : same-origin check on state-changing requests
+L -> L : secrets configured
+group Secrets missing [503]
+  L --> UI : Admin not configured
+end
+L -> RL : upsert counter for client address (5 per 15 minutes)
+group Over the limit [429]
+  L --> UI : Too many attempts, Retry-After
+end
+L -> L : compare email in constant time
+L -> L : always verify the scrypt hash
+group Either is wrong [401]
+  L --> UI : Email or password is incorrect (never says which)
+end
+L -> L : seal session (email, role admin) into a cookie
+L --> UI : 200 + Set-Cookie HttpOnly Secure SameSite Lax, 12 hours
+UI --> O : redirected to the requested admin page
+
+== Every admin API call ==
+UI -> G : request with the cookie
+G -> G : unseal cookie, role is admin
+group No valid session [401]
+  G --> UI : Unauthorized
+end
+G --> UI : handler runs
+@enduml

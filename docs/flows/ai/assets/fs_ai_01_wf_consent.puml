@@ -1,0 +1,14 @@
+@startsalt fs_ai_01_wf_consent
+{+
+  { <b>Allow an AI app?</b> }
+  { <b>Claude</b> }
+  { asks to connect to your Tomlop library. After you decide, you go back to claude.ai. }
+  --
+  { <b>If you allow it, it can</b> }
+  { Read every article, including drafts }
+  { Create, edit, publish, unpublish and delete articles }
+  { Nothing else: it cannot see readers, devices or settings }
+  { Only allow an app you just started connecting yourself. }
+  { [Allow] | [Deny] }
+}
+@endsalt

@@ -1,0 +1,47 @@
+@startuml fs_content_05_seq_retraction
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-CONTENT-05 (proposed) — Withdraw an article from phones
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "Backoffice" as UI #172554
+database "D1" as DB #052E16
+participant "Feed" as F #172554
+participant "App LibrarySync" as LS #1E1B4B
+database "Phone cache" as FS #052E16
+
+O -> UI : Withdraw from phones (published article)
+UI -> DB : state retired, retired_at now, revision kind retire
+UI -> F : purge the feed
+note over F
+  The article leaves articles in library.json and its id appears in
+  retired for 180 days. The field is additive inside schemaVersion 1.
+  Older apps ignore it and are unaffected.
+end note
+
+== A phone with a new enough app ==
+LS -> F : GET library.json
+F --> LS : articles (without it) and retired ids
+LS -> FS : for each retired id, delete the cached copy, if there is one
+group The id is a bundled article
+  LS -> LS : nothing to delete in the APK. The owner publishes a corrected
+  LS -> LS : article with the same id instead, and it replaces the bundled text.
+end
+LS --> LS : reader reloads without it
+@enduml

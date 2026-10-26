@@ -1,0 +1,32 @@
+// Cloudflare Workers configuration, merged into the generated .output/server/wrangler.json.
+// Prerendered pages (/, /privacy, /download) are served from static assets without waking
+// the Worker; the Worker handles /read, /library, /api, /admin, /mcp and /oauth.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tomlop-web",
+  "compatibility_date": "2026-09-01",
+  "main": ".output/server/index.mjs",
+  "compatibility_flags": ["nodejs_compat", "no_nodejs_compat_v2"],
+  "observability": { "enabled": true },
+  "assets": {
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "none",
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  },
+  "routes": [{ "pattern": "tomlop.chamrong.com", "custom_domain": true }],
+  // Articles, OAuth clients/tokens for AI connectors, and rate-limit counters.
+  // Create it once:  npx wrangler d1 create tomlop   then paste the database_id here.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tomlop",
+      "database_id": "32ae7bbb-d57b-4cbe-901b-d253d0475683",
+      "migrations_dir": "migrations"
+    }
+  ]
+  // Secrets (never commit):  npx wrangler secret put <NAME>
+  //   NUXT_SESSION_PASSWORD     32+ random characters, seals the admin session cookie
+  //   NUXT_ADMIN_EMAIL          the one admin's email
+  //   NUXT_ADMIN_PASSWORD_HASH  from `npm run hash-password`
+}

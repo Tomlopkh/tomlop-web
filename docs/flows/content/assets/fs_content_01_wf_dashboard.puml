@@ -1,0 +1,20 @@
+@startsalt fs_content_01_wf_dashboard
+{+
+  { <b>ទម្លាប់ Backoffice</b> | . | . | [Articles] | [AI connectors] | [Sign out] }
+  --
+  { <b>Articles</b> | . | . | . | [+ New article] }
+  { 86 published · 2 drafts · last edit 53 minutes ago }
+  { "Search by title or number    " | [All 88] | [Published 86] | [Drafts 2] }
+  ==
+  { <b>Drafts</b> }
+  { 88 | ចាប់ផ្ដើមក្នុងពីរនាទី | (Draft) | 1 min · 53 minutes ago }
+  { 89 | ឧទាហរណ៍ព្រមាន | (Draft) | 1 min · 2 hours ago }
+  ==
+  { <b>Published</b> | . | . | ^Library order^ }
+  { 1 | ដែនកំណត់នៃការយល់ឃើញ | 2 min · 20 Sept 2026 }
+  { 2 | ពេលវេលា និងការចងចាំ | 2 min · 20 Sept 2026 }
+  --
+  { <b>AI connectors</b> | . | . | <b>What phones receive</b> }
+  { 1 app connected · [Manage] | . | . | /library/library.json [Copy] }
+}
+@endsalt

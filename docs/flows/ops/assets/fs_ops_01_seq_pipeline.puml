@@ -1,0 +1,52 @@
+@startuml fs_ops_01_seq_pipeline
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-OPS-01 (proposed) — Check, deploy, watch
+autonumber "[00]"
+
+actor "Developer" as D #1E1B4B
+participant "GitHub" as GH #172554
+participant "CI job" as CI #172554
+participant "Workers Builds" as WB #172554
+participant "Worker\ntomlop-web" as W #052E16
+participant "Uptime monitor\nand alerts" as MON #3B0764
+
+== Check ==
+D -> GH : push
+GH -> CI : run
+CI -> CI : typecheck, unit tests, build
+CI -> CI : e2e script against wrangler dev with a throwaway local D1
+group Any step fails
+  CI --> GH : red, deploy blocked
+end
+
+== Deploy ==
+CI --> WB : green on main
+WB -> W : build and deploy
+WB -> W : D1 migrations run first, additive only
+
+== Watch ==
+MON -> W : GET /library/library.json and /privacy every few minutes
+group Not 200 or too slow
+  MON --> D : alert by email
+end
+W -> W : on writes, prune expired OAuth rows, stale rate limits, old revisions
+note over D, W
+  Monthly: export the database. Quarterly: practise a restore into a scratch database.
+end note
+@enduml

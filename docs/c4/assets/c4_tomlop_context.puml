@@ -1,0 +1,20 @@
+@startuml c4_tomlop_context
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title Tomlop: system context
+
+Person(user, "Reader and habit-keeper", "Cambodian Android user. Khmer-first, no account.")
+Person(owner, "Owner and editor", "Writes and publishes the article library.")
+System(app, "Tomlop Android app", "Offline habit tracker with a bundled article library. Syncs new articles when online.")
+System(web, "tomlop-web", "Website, backoffice, article feed and AI-connector endpoint on Cloudflare.")
+System_Ext(ai, "AI app (Claude, ChatGPT)", "Drafts articles on the owner's behalf through MCP.")
+System_Ext(play, "Google Play / APK download", "Distributes the app.")
+
+Rel(user, app, "Tracks habits, reads articles")
+Rel(user, web, "Reads the library and privacy policy", "HTTPS")
+Rel(app, web, "Downloads new and corrected articles. Sends nothing of the user's.", "HTTPS GET, at most daily")
+Rel(owner, web, "Writes, reviews and publishes", "HTTPS, signed-in session")
+Rel(ai, web, "Creates drafts, edits, publishes on request", "MCP over HTTPS, OAuth 2.1")
+Rel(owner, ai, "Asks for drafts, approves the connection")
+Rel(play, app, "Installs and updates")
+@enduml

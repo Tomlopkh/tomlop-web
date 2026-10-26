@@ -1,0 +1,34 @@
+@startuml c4_tomlop_container
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Tomlop: containers
+
+Person(owner, "Owner and editor")
+Person(user, "Reader")
+System_Ext(ai, "AI app", "Claude, ChatGPT")
+System_Ext(phone, "Tomlop Android app", "Room, DataStore, WorkManager; LibrarySync")
+
+System_Boundary(cf, "Cloudflare: Worker tomlop-web") {
+  Container(static, "Static assets", "Prerendered HTML, CSS", "Landing, privacy, download, stylesheet, download.json")
+  Container(spa, "Backoffice SPA", "Nuxt 4, Vue 3", "Article list, editor with live preview, AI connectors, consent screen")
+  Container(pub, "Public reading pages", "Nuxt SSR", "/read and /read/ID rendered from D1")
+  Container(api, "Admin API", "Nitro", "/api/admin: articles, connections, sign-in. Session and same-origin guarded.")
+  Container(feed, "Feed", "Nitro", "/library/library.json and /library/articles/ID.md. Edge-cached.")
+  Container(mcp, "MCP and OAuth", "Nitro", "/mcp, /oauth/*, /.well-known/*. Eight article tools.")
+  ContainerDb(db, "D1 tomlop", "SQLite", "articles, oauth_clients, oauth_codes, oauth_tokens, rate_limits")
+  Container(cache, "Edge cache", "Workers Cache API", "300 second TTL, purged on write")
+}
+
+Rel(user, static, "Reads", "HTTPS")
+Rel(user, pub, "Reads articles", "HTTPS")
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Calls", "JSON, cookie")
+Rel(api, db, "Reads and writes")
+Rel(pub, db, "Reads")
+Rel(feed, cache, "Reads and fills")
+Rel(feed, db, "Reads on a miss")
+Rel(api, cache, "Purges after a write")
+Rel(phone, feed, "Syncs", "HTTPS GET, daily")
+Rel(ai, mcp, "Calls tools", "Bearer token")
+Rel(mcp, db, "Reads and writes")
+@enduml

@@ -1,0 +1,62 @@
+@startuml fs_content_03_seq_revisions
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-CONTENT-03 (proposed) — Revision history and restore
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "Backoffice" as UI #172554
+participant "Admin API" as API #172554
+database "D1" as DB #052E16
+participant "Edge cache" as C #052E16
+
+== Every change writes a revision ==
+O -> UI : Save, publish, unpublish or delete
+UI -> API : request
+API -> DB : BATCH: change the article AND insert a revision (kind, actor, body, sha256)
+note over API, DB
+  One transaction. A revision exists for every state the article was ever in.
+  Older revisions beyond 50 per article and 180 days are pruned on write.
+end note
+API -> C : purge feed and article URLs
+
+== Look back ==
+O -> UI : History
+UI -> API : GET /api/admin/articles/ID/revisions
+API --> UI : list (time, who: admin or connector name, kind, size)
+O -> UI : choose one
+UI -> API : GET .../revisions/REV
+API --> UI : text
+UI --> O : the old text loaded into the editor as an unsaved change, with a diff
+
+== Restore ==
+O -> UI : Save the loaded text
+UI -> API : PUT article
+API -> DB : BATCH: update article, insert revision kind restore
+note over API, DB
+  Restoring never edits history: it adds a new revision on top.
+  A restored published article reaches phones on their next sync.
+end note
+
+== Deleted articles ==
+O -> UI : Recently deleted
+UI -> API : GET /api/admin/articles/deleted
+API --> UI : last deletes within 30 days
+O -> UI : Restore as draft
+API -> DB : BATCH: insert article from the last revision as a draft, insert revision
+@enduml

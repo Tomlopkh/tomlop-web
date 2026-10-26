@@ -1,0 +1,52 @@
+@startuml fs_content_04_seq_review
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-CONTENT-04 (proposed) — AI draft, human review, publish
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "AI app\n(drafts only)" as AI #1E1B4B
+participant "MCP" as M #172554
+participant "Consent screen" as CP #172554
+database "D1" as DB #052E16
+participant "Review queue" as Q #172554
+
+== Grant (once) ==
+O -> CP : Allow, with the box Allow publishing and deleting UNCHECKED by default
+CP -> DB : store the grant with scope articles:write
+note over CP
+  Checking the box grants the full scope. The list of connected apps
+  shows each app as Drafts only or Can publish.
+end note
+
+== Draft ==
+AI -> M : create_article, then request_review
+M -> DB : article state in_review (revision actor is the connector name)
+group The connector calls publish_article or delete_article
+  M --> AI : refused, tell the owner to publish it
+end
+
+== Review ==
+O -> Q : open the queue (in-review articles first)
+Q -> DB : article, warnings, who made it, diff against the last published text
+O -> Q : Approve
+Q -> DB : BATCH: state published, revision actor admin
+O -> Q : or Send back with a note
+Q -> DB : state draft, note kept
+AI -> M : get_article shows the note, so the assistant can revise
+@enduml

@@ -1,0 +1,41 @@
+@startuml fs_content_06_seq_topics
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+skinparam stateBackgroundColor #172554
+skinparam stateBorderColor #6366F1
+skinparam stateFontColor #E5E7EB
+skinparam stateArrowColor #A5B4FC
+title FS-CONTENT-06 (proposed) — Topic backlog and editorial calendar
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "Ideas board" as B #172554
+participant "AI app" as AI #1E1B4B
+participant "MCP" as M #172554
+database "D1 topics" as DB #052E16
+
+O -> B : add an idea (title, note)
+B -> DB : topic status idea
+AI -> M : list_topics, then suggest_topic with a title and a reason
+M -> DB : topic status idea, source connector (never auto-planned)
+O -> B : move to planned with a target week
+B -> DB : status planned
+O -> AI : write the planned topic
+AI -> M : create_article with topic id
+M -> DB : article draft, topic status drafting and linked
+note over B, DB
+  Publishing the article moves the topic to published.
+  The board also shows weeks with a published article and weeks without.
+end note
+@enduml

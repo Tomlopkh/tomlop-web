@@ -1,0 +1,76 @@
+@startuml fs_content_02_seq_feed_sync
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+title FS-CONTENT-02 — The app syncs new and corrected articles
+autonumber "[00]"
+
+participant "App\n(ViewModel)" as VM #1E1B4B
+participant "LibrarySync" as LS #1E1B4B
+participant "filesDir/library\n(cache)" as FS #052E16
+participant "Worker\n/library/*" as W #172554
+participant "Edge cache" as C #052E16
+database "D1" as DB #052E16
+participant "Reader UI" as R #1E1B4B
+
+== Phase 1 — Gate ==
+VM -> LS : sync() on a background thread at app start
+LS -> FS : read last-sync stamp
+group Checked within 24 hours
+  LS --> VM : false, stop
+end
+
+== Phase 2 — Index ==
+LS -> W : GET /library/library.json (HTTPS, User-Agent Tomlop)
+W -> C : lookup
+alt Cache hit
+  C --> W : cached index
+else Cache miss
+  W -> DB : SELECT published articles (metadata only)
+  DB --> W : rows
+  W -> C : store for 300 seconds
+end
+W --> LS : 200 index
+LS -> LS : schemaVersion known and minAppVersionCode <= versionCode
+group Unknown schema or app too old
+  LS --> VM : false (bundled articles only)
+end
+
+== Phase 3 — Diff by hash ==
+LS -> FS : sha256 of each cached file
+LS -> LS : sha256 of each bundled asset
+loop each entry in the index
+  alt cached hash equals feed hash
+    LS -> LS : up to date
+  else bundled hash equals feed hash
+    LS -> FS : delete stale cached copy, if any
+  else differs
+    LS -> W : GET /library/articles/ID.md
+    W --> LS : markdown
+    LS -> LS : verify sha256, size cap, parses as an article
+    group Mismatch or malformed
+      LS -> LS : discard, mark sync incomplete
+    end
+    LS -> FS : write temp file then rename
+  end
+end
+LS -> FS : touch last-sync stamp (only if every download succeeded)
+
+== Phase 4 — Show ==
+LS --> VM : true if anything changed
+VM -> R : libraryRevision++ reloads the list
+R -> R : merge bundled + cached by id, cached wins
+note over LS, R
+  Every failure is silent. Offline, the reader shows the 86 bundled articles.
+end note
+@enduml

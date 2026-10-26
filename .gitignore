@@ -1,2 +1,10 @@
 .DS_Store
 site-*.png
+node_modules/
+.nuxt/
+.output/
+.data/
+.wrangler/
+.dev.vars
+.env
+seed.sql

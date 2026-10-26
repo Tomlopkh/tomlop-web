@@ -1,0 +1,30 @@
+@startsalt fs_content_01_wf_editor
+{+
+  { <b>ទម្លាប់ Backoffice</b> | . | . | [Articles] | [AI connectors] | [Sign out] }
+  --
+  { [< Articles] }
+  { <b>89-warn-demo</b> | (Draft) }
+  --
+  {
+    { <b>Markdown</b> | . | . | (4 to check) }
+    { "# Warn Demo / ឧទាហរណ៍ព្រមាន                    "
+      "                                                 "
+      "## ផ្នែក                                         "
+      "### heading ខុស                                   "
+      "- **ពាក្យ៖ មិនបិទ                                 "
+    }
+    |
+    { <b>Preview, as readers see it</b> }
+    { "Warn Demo"
+      "ឧទាហរណ៍ព្រមាន"
+      "អានប្រហែល ១ នាទី"
+      "ផ្នែក" }
+  }
+  { <i>Check before publishing: ### is not supported; numbered lists are not supported</i> }
+  --
+  { [X] Published | . | . | Unsaved changes | [Save changes] }
+  ==
+  { <b>Delete this article</b> }
+  { [Delete article] }
+}
+@endsalt

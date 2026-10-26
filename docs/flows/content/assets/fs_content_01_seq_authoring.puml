@@ -1,0 +1,56 @@
+@startuml fs_content_01_seq_authoring
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+title FS-CONTENT-01 — Write and publish an article
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "Backoffice SPA\n(browser)" as UI #172554
+participant "Admin API\n(Nitro)" as API #172554
+participant "Shared validator" as V #172554
+database "D1 articles" as DB #052E16
+participant "Edge cache" as C #052E16
+
+== Phase 1 — Writing, entirely in the browser ==
+O -> UI : types Markdown
+UI -> V : validateArticle (same code as the server)
+V --> UI : errors, warnings, parsed article
+UI --> O : live preview + "Valid" or "N to check"
+
+== Phase 2 — Save ==
+O -> UI : Save (button or Ctrl/Cmd+S)
+UI -> API : PUT /api/admin/articles/ID (markdown, published)
+API -> API : admin-guard: session cookie + same-origin
+group Not signed in [401]
+  API --> UI : 401
+  UI --> O : redirected to sign-in
+end
+API -> V : validateArticle(id, markdown)
+group Invalid [422]
+  API --> UI : 422 with the reason
+  UI --> O : error shown, nothing saved
+end
+API -> API : normalize line endings, compute bytes and sha256
+API -> DB : UPDATE title, body, minutes, bytes, sha256, published, updated_at
+DB --> API : changes = 1
+API -> C : purge library.json and article .md
+API --> UI : 200 with warnings
+UI --> O : "Saved"
+
+== Phase 3 — Reach ==
+note over C, DB
+  Website: next request reads D1 (within seconds).
+  Phones: next daily sync sees the new sha256.
+end note
+@enduml

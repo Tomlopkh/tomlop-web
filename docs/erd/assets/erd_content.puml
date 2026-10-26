@@ -1,0 +1,125 @@
+@startuml erd_content
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam linetype ortho
+skinparam classBackgroundColor #172554
+skinparam classBorderColor #6366F1
+skinparam classFontColor #E5E7EB
+skinparam classAttributeFontColor #E5E7EB
+skinparam packageBackgroundColor #0F0E17
+skinparam packageBorderColor #6366F1
+skinparam packageFontColor #E5E7EB
+skinparam arrowColor #A5B4FC
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+title Tomlop content platform: data model
+
+package "D1 database tomlop (SQLite)" {
+  class articles <<entity>> #172554 {
+    * id : TEXT <<PK>>   (87-small-habits)
+    --
+    title_en : TEXT
+    title_km : TEXT
+    body : TEXT   (exact Markdown served to phones)
+    reading_minutes : INTEGER
+    bytes : INTEGER
+    sha256 : TEXT   (of body)
+    published : INTEGER   (0 or 1)
+    updated_at : TEXT   (ISO 8601)
+  }
+
+  class article_revisions <<proposed>> #3B0764 {
+    * id : INTEGER <<PK>>
+    --
+    article_id : TEXT <<FK>>
+    body : TEXT
+    sha256 : TEXT
+    published : INTEGER
+    actor : TEXT   (admin email or connector name)
+    actor_kind : TEXT   (admin or connector)
+    created_at : TEXT
+  }
+
+  class oauth_clients <<entity>> #172554 {
+    * id : TEXT <<PK>>   (mcp_...)
+    --
+    name : TEXT
+    redirect_uris : TEXT   (JSON array)
+    secret_hash : TEXT   (null for public clients)
+    created_at : INTEGER
+  }
+
+  class oauth_codes <<entity>> #172554 {
+    * code_hash : TEXT <<PK>>
+    --
+    client_id : TEXT <<FK>>
+    redirect_uri : TEXT
+    code_challenge : TEXT
+    scope : TEXT
+    resource : TEXT
+    expires_at : INTEGER
+    used : INTEGER
+  }
+
+  class oauth_tokens <<entity>> #172554 {
+    * token_hash : TEXT <<PK>>
+    --
+    kind : TEXT   (access or refresh)
+    client_id : TEXT <<FK>>
+    scope : TEXT
+    resource : TEXT
+    family : TEXT   (revoked together)
+    expires_at : INTEGER
+    revoked : INTEGER
+    created_at : INTEGER
+  }
+
+  class rate_limits <<entity>> #172554 {
+    * id : TEXT <<PK>>   (key:client address)
+    --
+    count : INTEGER
+    reset_at : INTEGER
+  }
+}
+
+package "Not in the database" {
+  class "Admin session" as sess <<cookie>> #422006 {
+    sealed, HttpOnly, 12 hours
+    email, role = admin
+  }
+  class "Cloudflare secrets" as sec <<secret>> #422006 {
+    NUXT_SESSION_PASSWORD
+    NUXT_ADMIN_EMAIL
+    NUXT_ADMIN_PASSWORD_HASH
+  }
+}
+
+package "On the phone" {
+  class "filesDir/library/ID.md" as pf <<file>> #052E16 {
+    cached article, wins over the bundled copy
+    verified by sha256 before it is written
+  }
+  class "assets/articles/ID.md" as ba <<bundled>> #052E16 {
+    the 86 originals inside the APK
+  }
+}
+
+oauth_clients "1" -- "0..*" oauth_codes
+oauth_clients "1" -- "0..*" oauth_tokens
+articles "1" -- "0..*" article_revisions : proposed
+articles ..> pf : feed delivers
+articles ..> ba : same ids 01-86
+
+note right of articles
+  Ordering: CAST(id AS INTEGER), id.
+  The id is also the filename on the phone,
+  so it matches ^[0-9]{2,3}-[a-z0-9-]+$
+end note
+note bottom of oauth_tokens
+  Only SHA-256 hashes are stored.
+  Replaying a code or an old refresh token
+  revokes every token in its family.
+end note
+@enduml

@@ -1,0 +1,78 @@
+@startuml fs_ai_01_seq_connector
+skinparam backgroundColor #0F0E17
+skinparam defaultFontColor #E5E7EB
+skinparam sequenceArrowColor #A5B4FC
+skinparam sequenceLifeLineBorderColor #6366F1
+skinparam sequenceGroupBackgroundColor #1A1830
+skinparam sequenceGroupBorderColor #6366F1
+skinparam sequenceDividerBackgroundColor #1A1830
+skinparam sequenceDividerFontColor #E5E7EB
+skinparam noteBackgroundColor #1A1830
+skinparam noteBorderColor #6366F1
+skinparam noteFontColor #E5E7EB
+skinparam titleFontColor #E5E7EB
+skinparam ParticipantFontColor #E5E7EB
+title FS-AI-01 — Connect an AI app and let it draft an article
+autonumber "[00]"
+
+actor "Owner" as O #1E1B4B
+participant "AI app\n(Claude, ChatGPT)" as AI #1E1B4B
+participant "OAuth endpoints" as OA #172554
+participant "Consent page\n/admin/connect" as CP #172554
+participant "MCP\nPOST /mcp" as M #172554
+database "D1 oauth tables\nand articles" as DB #052E16
+
+== Phase 1 — Discovery and registration ==
+AI -> M : POST /mcp with no token
+M --> AI : 401 + resource_metadata URL
+AI -> OA : GET /.well-known/oauth-protected-resource/mcp
+AI -> OA : GET /.well-known/oauth-authorization-server
+AI -> OA : POST /oauth/register (redirect URIs, name)
+OA -> DB : INSERT oauth_clients
+group Plain http that is not loopback [400]
+  OA --> AI : invalid_redirect_uri
+end
+OA --> AI : 201 client_id
+
+== Phase 2 — The owner decides ==
+AI -> OA : GET /oauth/authorize (PKCE challenge, state, resource)
+OA -> DB : client known and redirect_uri registered
+group Unknown client or unregistered redirect [400]
+  OA --> O : error page, never redirect
+end
+OA --> O : 302 to /admin/connect with the same parameters
+O -> CP : signs in as admin if needed
+CP -> OA : GET /api/admin/oauth/request (re-validates)
+CP --> O : "Claude asks to connect" and what it can do
+O -> CP : Allow
+CP -> OA : POST /api/admin/oauth/approve
+OA -> DB : INSERT oauth_codes (hash only, 5 minutes)
+OA --> O : redirect to the AI app with code and state
+
+== Phase 3 — Tokens ==
+AI -> OA : POST /oauth/token (code, code_verifier)
+OA -> DB : code unused, not expired, redirect matches, PKCE verifies
+group Code already used
+  OA -> DB : revoke every token from that code
+  OA --> AI : invalid_grant
+end
+OA -> DB : INSERT access (1 hour) and refresh (30 days) token hashes
+OA --> AI : 200 tokens
+
+== Phase 4 — Work ==
+AI -> M : tools/call create_article (Bearer access token)
+M -> DB : token hash valid, not revoked, bound to this resource
+M -> DB : validate then INSERT article as a draft
+M --> AI : saved as draft with warnings
+note over M, DB
+  publish_article is a separate call, made only when the owner says so.
+end note
+
+== Phase 5 — Rotation ==
+AI -> OA : POST /oauth/token (refresh_token)
+OA -> DB : mark old refresh used, issue a new pair, same family
+group Old refresh token presented again
+  OA -> DB : revoke the whole family
+  OA --> AI : invalid_grant
+end
+@enduml

@@ -1,0 +1,11 @@
+@startsalt fs_admin_01_wf_sign_in
+{+
+  { <b>Sign in</b> }
+  { Write, publish and manage the Tomlop article library. }
+  { Email }
+  { "chamrong.thor.me@gmail.com" }
+  { Password }
+  { "••••••••••••••••••" }
+  { [Sign in] }
+}
+@endsalt
