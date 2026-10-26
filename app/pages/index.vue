@@ -10,11 +10,20 @@ useSeoMeta({
 const { lang } = useLang()
 
 // The demonstration ledger: tapping a row is the one interaction the site shows off.
+// pops re-keys the +XP chip so the reward animation replays on every check.
 const rows = reactive([
-  { km: 'ដើរ ១៥ នាទី', en: 'Walk 15 minutes', done: false },
-  { km: 'អានសៀវភៅ ១០ ទំព័រ', en: 'Read 10 pages', done: false },
-  { km: 'ផឹកទឹកឲ្យបានគ្រប់គ្រាន់', en: 'Drink enough water', done: true },
+  { km: 'ដើរ ១៥ នាទី', en: 'Walk 15 minutes', done: false, pops: 0 },
+  { km: 'អានសៀវភៅ ១០ ទំព័រ', en: 'Read 10 pages', done: false, pops: 0 },
+  { km: 'ផឹកទឹកឲ្យបានគ្រប់គ្រាន់', en: 'Drink enough water', done: true, pops: 0 },
 ])
+
+function toggle(row: (typeof rows)[number]) {
+  row.done = !row.done
+  if (row.done) row.pops += 1
+}
+
+const doneCount = computed(() => rows.filter((r) => r.done).length)
+const allDone = computed(() => doneCount.value === rows.length && rows.length > 0)
 
 // Today's date is client-only, so a prerendered page never shows a stale date.
 const now = ref<Date | null>(null)
@@ -23,12 +32,25 @@ onMounted(() => { now.value = new Date() })
 const dateline = computed(() => {
   if (!now.value) return ''
   return lang.value === 'en'
-    ? `Today — ${now.value.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`
-    : `ថ្ងៃនេះ — ${khDate(now.value)}`
+    ? now.value.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : khDate(now.value)
 })
 
+// Deterministic confetti pieces — re-keyed per celebration so the burst replays.
+const CONFETTI = Array.from({ length: 26 }, (_, i) => ({
+  left: `${(i * 37) % 92 + 4}%`,
+  color: ['var(--butter)', 'var(--coral)', 'var(--sky)', 'var(--lilac)', 'var(--moss)', 'var(--pink)'][i % 6],
+  dur: `${1 + ((i * 13) % 40) / 60}s`,
+  delay: `${((i * 7) % 20) / 100}s`,
+  sway: `${((i * 11) % 30) - 15}px`,
+  spin: `${240 + ((i * 17) % 300)}deg`,
+}))
+
+const celebrations = ref(0)
+watch(allDone, (done) => { if (done) celebrations.value += 1 })
+
 const tally = computed(() => {
-  const done = rows.filter((r) => r.done).length
+  const done = doneCount.value
   const total = rows.length
   if (lang.value === 'en') {
     return done === total ? `<b>All ${total} done.</b> That is the whole app.` : `<b>${done} of ${total}</b> marked. Tap a row to try it.`
@@ -43,27 +65,60 @@ const tally = computed(() => {
   <div class="shell">
     <section class="hero">
      <div class="hero-copy">
+      <p class="kicker"><span class="km">គ្មានគណនី · ដំណើរការក្រៅបណ្ដាញ</span><span class="en">No account · Works offline</span></p>
       <h1>
         <span class="km">កត់ត្រាថ្ងៃនេះ ដោយចុចតែម្ដង</span>
         <span class="en">Mark today in one tap</span>
       </h1>
 
       <p class="hero-lede">
-        <span class="km">ជ្រើសរើសសកម្មភាពតូចៗដែលអ្នកអាចធ្វើបានរាល់ថ្ងៃ។ ចុចមួយដងពេលធ្វើរួច។ គ្មានគណនី គ្មានការតាមដាន។</span>
-        <span class="en">Choose small actions you can repeat. Tap once when they are done. No account, no tracking.</span>
+        <span class="km">ជ្រើសរើសសកម្មភាពតូចៗដែលអ្នកអាចធ្វើបានរាល់ថ្ងៃ។ ចុចមួយដងពេលធ្វើរួច ហើយមើលរូបត្លុកតូចៗរបស់អ្នករំភើបទៅតាមវឌ្ឍនភាព។ គ្មានគណនី គ្មានការតាមដាន។</span>
+        <span class="en">Pick small actions you can repeat. Tap once when they are done, and watch your blobs react to your progress. No account, no tracking.</span>
       </p>
 
       <div class="actions">
-        <NuxtLink class="soon" to="/download"><span class="km">ទាញយកកម្មវិធី</span><span class="en">Download the app</span></NuxtLink>
-        <p class="aside-note"><span class="km">Android ៨.០ ឡើងទៅ</span><span class="en">Android 8.0 and above</span></p>
+        <NuxtLink class="btn" to="/download"><span class="km">ទាញយកកម្មវិធី</span><span class="en">Download the app</span></NuxtLink>
+        <NuxtLink class="btn-ghost" to="/read/"><span class="km">សាកល្បងអាន</span><span class="en">Try the library</span></NuxtLink>
       </div>
+      <ul class="chips">
+        <li><span class="km">ទិន្នន័យនៅក្នុងទូរស័ព្ទ</span><span class="en">Data stays on the phone</span></li>
+        <li><span class="km">៨៦ អត្ថបទខ្មែរ</span><span class="en">86 Khmer articles</span></li>
+        <li>Android 8.0+</li>
+      </ul>
      </div>
 
      <div class="today-page">
-      <p class="dateline">{{ dateline }}</p>
+      <div class="mascot" aria-hidden="true">
+        <svg v-if="allDone" viewBox="0 0 88 64" fill="none" stroke="#22223B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="44" cy="38" rx="34" ry="22" fill="var(--moss)" />
+          <path d="M28 36 Q32 28 36 36" />
+          <path d="M52 36 Q56 28 60 36" />
+          <path d="M33 42 Q44 54 55 42" />
+          <circle cx="24" cy="43" r="3.5" fill="var(--pink)" stroke="none" opacity=".85" />
+          <circle cx="64" cy="43" r="3.5" fill="var(--pink)" stroke="none" opacity=".85" />
+        </svg>
+        <svg v-else viewBox="0 0 88 64" fill="none" stroke="#22223B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="44" cy="38" rx="34" ry="22" fill="var(--moss)" />
+          <circle cx="32" cy="35" r="3" fill="#22223B" stroke="none" />
+          <circle cx="56" cy="35" r="3" fill="#22223B" stroke="none" />
+          <path d="M36 44 Q44 49 52 44" />
+          <circle cx="25" cy="42" r="3.5" fill="var(--pink)" stroke="none" opacity=".85" />
+          <circle cx="63" cy="42" r="3.5" fill="var(--pink)" stroke="none" opacity=".85" />
+        </svg>
+      </div>
+
+      <p class="dateline"><span class="km">ថ្ងៃនេះ — {{ dateline }}</span><span class="en">Today — {{ dateline }}</span></p>
+      <div v-if="allDone" class="confetti" :key="celebrations" aria-hidden="true">
+        <i
+          v-for="(piece, i) in CONFETTI"
+          :key="i"
+          :style="{ left: piece.left, background: piece.color, '--dur': piece.dur, '--delay': piece.delay, '--sway': piece.sway, '--spin': piece.spin }"
+        />
+      </div>
       <div class="ledger" role="group" aria-label="Demonstration">
-        <button v-for="row in rows" :key="row.en" type="button" class="row" :aria-pressed="row.done" @click="row.done = !row.done">
-          <span class="stamp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#14231D" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.8 L9.4 18 L20 6.6" /></svg></span>
+        <button v-for="row in rows" :key="row.en" type="button" class="row" :aria-pressed="row.done" @click="toggle(row)">
+          <span v-if="row.done && row.pops > 0" :key="row.pops" class="xp-pop" aria-hidden="true">+៥ XP</span>
+          <span class="stamp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#22223B" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.8 L9.4 18 L20 6.6" /></svg></span>
           <span class="row-label"><span class="km">{{ row.km }}</span><span class="en">{{ row.en }}</span></span>
           <span class="row-meta"><span class="km">រាល់ថ្ងៃ</span><span class="en">Daily</span></span>
         </button>
@@ -83,7 +138,7 @@ const tally = computed(() => {
       <dl class="entries">
         <div class="entry">
           <dt><span class="km">ថ្ងៃនេះ</span><span class="en">Today</span></dt>
-          <dd><span class="km">បញ្ជីខ្លីនៃសកម្មភាពសម្រាប់ថ្ងៃនេះ។ ចុចមួយដងដើម្បីកត់ត្រា ហើយឃើញវឌ្ឍនភាពភ្លាមៗ។</span><span class="en">A short list of what today asks of you. One tap records it, and the ledger updates immediately.</span></dd>
+          <dd><span class="km">បញ្ជីខ្លីនៃសកម្មភាពសម្រាប់ថ្ងៃនេះ។ ចុចមួយដងដើម្បីកត់ត្រា ហើយឃើញរូបត្លុកតូចៗរំភើបភ្លាមៗ។</span><span class="en">A short list of what today asks of you. One tap records it, and your blobs react right away.</span></dd>
         </div>
         <div class="entry">
           <dt><span class="km">គោលដៅ</span><span class="en">Goals</span></dt>

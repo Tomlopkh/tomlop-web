@@ -1,39 +1,51 @@
-/* Tomlop — the almanac page.
-   Tokens mirror the Android app's DESIGN.md so both surfaces stay one brand. */
+/* Tomlop — playful pastel.
+   Tokens mirror the Android app's playful redesign so both surfaces stay
+   one brand: lavender paper, ink borders, white cards with hard shadows,
+   butter-saffron accents, chunky pill buttons. */
 
 :root {
-  --paper:        #FFFBF2;
-  --paper-shade:  #F3EFE6;
-  --rule:         #E3DCCB;
-  --ink:          #14231D;
-  --ink-soft:     #4B5B53;
-  --ink-faint:    #707F77;
-  --green:        #176B45;
-  --green-deep:   #0D3524;
-  --green-wash:   #D4F3DF;
+  --paper:        #ECE9F5;  /* lavender mist */
+  --paper-shade:  #FFFFFF;  /* card surface */
+  --rule:         rgba(34, 34, 59, .16);
+  --ink:          #22223B;
+  --ink-soft:     #4C4C68;
+  --ink-faint:    #71718F;
+  --green:        #176B45;  /* brand mark only */
+  --butter:       #FFE58A;
   --saffron:      #F5C95B;
   --saffron-deep: #765D08;
-  --on-green:     #FFFBF2;
+  --coral:        #FF9B9B;
+  --peach:        #FFC9A3;
+  --sky:          #BCD8F5;
+  --lilac:        #D9C6F5;
+  --moss:         #B9EBB0;
+  --pink:         #FFCBE0;
+  --on-ink:       #F5F3FF;
+  --shadow:       #22223B;
 
   --shell: 68rem;
   --gutter: clamp(1rem, 5vw, 3rem);
 
-  --serif: "Noto Serif Khmer", Georgia, serif;
+  /* Display stack: Baloo 2 for Latin, Kantumruy Pro carries Khmer
+     (Baloo 2 has no Khmer glyphs, so it falls through). */
+  --display: "Baloo 2", "Kantumruy Pro", system-ui, sans-serif;
   --sans:  "Kantumruy Pro", "Noto Sans Khmer", system-ui, -apple-system, sans-serif;
+
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper:       #101A16;
-    --paper-shade: #16231E;
-    --rule:        #28322E;
-    --ink:         #EDF2EE;
-    --ink-soft:    #A8B4AE;
-    --ink-faint:   #8A968F;
-    --green:       #6EB58F;
-    --green-deep:  #9FD6B7;
-    --green-wash:  #122C21;
-    --on-green:    #08120D;
+    --paper:       #191927;  /* deep plum */
+    --paper-shade: #232338;  /* card surface */
+    --rule:        rgba(236, 238, 251, .18);
+    --ink:         #ECEEFB;
+    --ink-soft:    #BDBFDA;
+    --ink-faint:   #9092B2;
+    --butter:      #F0CE6B;
+    --saffron:     #E5BE55;
+    --on-ink:      #191927;
+    --shadow:      rgba(5, 5, 18, .6);
   }
 }
 
@@ -55,19 +67,21 @@ body {
 /* Khmer needs more room between lines than Latin. */
 :lang(km) { line-height: 1.95; }
 
-h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.5; margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.4; margin: 0; }
 
-a { color: var(--green); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
-a:hover { color: var(--ink); }
+a { color: var(--ink); text-decoration-color: var(--saffron); text-decoration-thickness: 2px; text-underline-offset: .2em; }
+a:hover { text-decoration-color: var(--ink); }
 
-:focus-visible { outline: 2.5px solid var(--saffron); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--butter); color: #22223B; }
+
+:focus-visible { outline: 3px solid var(--saffron); outline-offset: 3px; border-radius: 6px; }
 
 .shell { max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter); }
 
 .skip {
   position: absolute; left: -9999px;
-  background: var(--ink); color: var(--paper);
-  padding: 0.6rem 1rem; border-radius: 4px; z-index: 10;
+  background: var(--ink); color: var(--on-ink);
+  padding: .6rem 1rem; border-radius: 999px; z-index: 10;
 }
 .skip:focus { left: 1rem; top: 1rem; }
 
@@ -79,20 +93,85 @@ a:hover { color: var(--ink); }
 
 .masthead {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; padding-block: 1.1rem;
-  border-bottom: 1px solid var(--rule);
+  gap: 1rem; padding-block: 1rem;
 }
-.brand { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: inherit; }
-.brand img { width: 34px; height: 34px; border-radius: 9px; display: block; }
-.brand b { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; }
+.brand { display: flex; align-items: center; gap: .625rem; text-decoration: none; color: inherit; }
+.brand img {
+  width: 38px; height: 38px; border-radius: 12px; display: block;
+  border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow);
+}
+.brand b { font-family: var(--display); font-size: 1.3rem; font-weight: 700; }
 
-.langs { display: flex; gap: 0.125rem; }
-.langs button {
-  font: inherit; font-size: 0.875rem;
-  background: none; border: 0; cursor: pointer;
-  color: var(--ink-faint); padding: 0.35rem 0.6rem; border-radius: 999px;
+/* A segmented pill: one ink-bordered track, the active language in butter. */
+.langs {
+  display: flex; gap: 0;
+  background: var(--paper-shade);
+  border: 2px solid var(--ink); border-radius: 999px;
+  padding: 3px;
+  box-shadow: 3px 3px 0 var(--shadow);
 }
-.langs button[aria-pressed="true"] { color: var(--ink); background: var(--paper-shade); }
+.langs button {
+  font: inherit; font-size: .875rem; font-weight: 600;
+  background: none; border: 0; cursor: pointer;
+  color: var(--ink-faint); padding: .3rem .85rem; border-radius: 999px;
+  transition: background-color 160ms ease, color 160ms ease, transform 120ms var(--spring);
+}
+.langs button:hover { color: var(--ink); }
+.langs button:active { transform: scale(.93); }
+.langs button[aria-pressed="true"] { color: #22223B; background: var(--butter); }
+
+/* ---------- shared playful bits ---------- */
+
+/* The house card: white surface, thick ink border, hard offset shadow. */
+.card {
+  background: var(--paper-shade);
+  border: 2.5px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 8px 8px 0 var(--shadow);
+}
+
+/* Chunky pill button: ink fill, hard shadow, tactile press. */
+.btn {
+  display: inline-block; padding: .85rem 1.9rem; border-radius: 999px;
+  background: var(--ink); color: var(--on-ink);
+  border: 2.5px solid var(--ink);
+  text-decoration: none; font-weight: 700; font-family: var(--display);
+  font-size: 1.05rem;
+  box-shadow: 5px 5px 0 var(--shadow);
+  transition: transform 140ms var(--spring), box-shadow 140ms var(--spring), background-color 160ms ease;
+}
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--shadow); color: var(--on-ink); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--shadow); }
+
+/* Ghost pill: outlined secondary action. */
+.btn-ghost {
+  display: inline-block; padding: .85rem 1.6rem; border-radius: 999px;
+  background: var(--paper-shade); color: var(--ink);
+  border: 2.5px solid var(--ink);
+  text-decoration: none; font-weight: 600;
+  box-shadow: 5px 5px 0 var(--shadow);
+  transition: transform 140ms var(--spring), box-shadow 140ms var(--spring), background-color 160ms ease;
+}
+.btn-ghost:hover { background: var(--lilac); transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--shadow); color: var(--ink); }
+.btn-ghost:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--shadow); }
+
+/* A quiet chip: white, ink border, saffron dot — a status or soft entry point. */
+.soon {
+  display: inline-flex; align-items: center; gap: .6rem;
+  padding: .6rem 1.1rem; border-radius: 999px;
+  background: var(--paper-shade);
+  border: 2px solid var(--ink); color: var(--ink-soft);
+  font-size: .9375rem; font-weight: 500; text-decoration: none;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+a.soon:hover { background: var(--moss); color: var(--ink); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow); }
+a.soon:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--shadow); }
+.soon::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--saffron); flex: none;
+}
+
+.aside-note { font-size: .9375rem; color: var(--ink-faint); margin: 0; }
 
 /* ---------- hero: today's page ---------- */
 
@@ -102,164 +181,205 @@ a:hover { color: var(--ink); }
   padding-block: clamp(2rem, 6vw, 3.75rem) clamp(2.25rem, 6vw, 3.5rem);
 }
 
-/* On a wide screen the copy sits beside the page, rather than leaving
-   half the viewport empty. */
 @media (min-width: 62rem) {
   .hero { grid-template-columns: 1fr minmax(21rem, 27rem); align-items: start; }
 }
 
+/* A kicker pill sits above the headline like a sticker. */
+.kicker {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--moss); color: #22223B;
+  border: 2px solid var(--ink); border-radius: 999px;
+  padding: .3rem 1rem;
+  font-size: .875rem; font-weight: 600;
+  box-shadow: 3px 3px 0 var(--shadow);
+  margin-bottom: 1.4rem;
+}
+.kicker::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: #22223B; flex: none;
+}
+
 .hero h1 {
-  font-size: clamp(1.75rem, 5vw, 2.625rem);
-  max-width: 22ch; margin-bottom: 1.5rem;
+  font-size: clamp(2rem, 5.5vw, 3rem);
+  font-weight: 700;
+  max-width: 20ch; margin-bottom: 1.25rem;
+  letter-spacing: -.01em;
 }
 
-.hero-lede { color: var(--ink-soft); max-width: 44ch; margin: 0 0 2.25rem; }
+.hero-lede { color: var(--ink-soft); max-width: 44ch; margin: 0 0 2rem; }
 
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.1rem; margin-bottom: 1.6rem; }
 
-.btn {
-  display: inline-block; padding: 0.8rem 1.6rem; border-radius: 14px;
-  background: var(--green); color: var(--on-green);
-  text-decoration: none; font-weight: 600;
-}
-.btn:hover { background: var(--green-deep); color: var(--on-green); }
-
-/* A quiet chip with a saffron dot: a status or a soft entry point,
-   never competing with the primary action. */
-.soon {
-  display: inline-flex; align-items: center; gap: 0.6rem;
-  padding: 0.6rem 1.1rem; border-radius: 999px;
-  border: 1px solid var(--rule); color: var(--ink-soft);
-  font-size: 0.9375rem; text-decoration: none;
-}
-a.soon:hover { border-color: var(--green); color: var(--green); }
-.soon::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--saffron); flex: none;
-}
-
-.aside-note { font-size: 0.9375rem; color: var(--ink-faint); margin: 0; }
-
-/* The page itself: a leaf out of an almanac. */
-.today-page {
+.chips { display: flex; flex-wrap: wrap; gap: .55rem; padding: 0; margin: 0; list-style: none; }
+.chips li {
+  font-size: .85rem; font-weight: 600; color: var(--ink-soft);
   background: var(--paper-shade);
-  border: 1px solid var(--rule);
-  border-radius: 16px;
-  padding: 1.25rem 1.25rem 1.4rem;
+  border: 2px solid var(--rule); border-radius: 999px;
+  padding: .28rem .85rem;
+}
+.chips li:nth-child(1) { border-color: var(--ink); background: var(--butter); color: #22223B; }
+
+/* The page itself: a leaf out of a habit almanac, now a toy. */
+.today-page {
+  position: relative;
+  background: var(--paper-shade);
+  border: 2.5px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 8px 8px 0 var(--shadow);
+  padding: 1.35rem 1.35rem 1.5rem;
 }
 
 .dateline {
-  font-family: var(--serif); font-size: 0.9375rem;
-  color: var(--ink-faint);
-  margin: 0 0 0.35rem; padding-bottom: 0.85rem;
-  border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  font-family: var(--display); font-weight: 600; font-size: .9375rem;
+  color: var(--ink);
+  margin: 0 0 .5rem; padding-bottom: .85rem;
+  border-bottom: 2px solid var(--rule);
 }
 
-.ledger { margin-bottom: 1rem; }
+.ledger { margin-bottom: .35rem; }
 
 .row {
-  display: flex; align-items: center; gap: 0.875rem; width: 100%;
-  padding: 0.85rem 0.35rem;
-  border: 0; border-bottom: 1px solid var(--rule);
+  position: relative;
+  display: flex; align-items: center; gap: .9rem; width: 100%;
+  padding: .8rem .5rem;
+  border: 0; border-bottom: 2px solid var(--rule);
   background: none; color: inherit; font: inherit; text-align: start;
-  cursor: pointer; border-radius: 8px;
-  transition: background-color 160ms ease;
+  cursor: pointer; border-radius: 12px;
+  transition: background-color 160ms ease, transform 120ms var(--spring);
 }
 .row:last-of-type { border-bottom: 0; }
 .row:hover { background: var(--paper); }
+.row:active { transform: scale(.975); }
 
+/* The stamp: a rounded tile that pops when marked. */
 .stamp {
-  flex: none; width: 27px; height: 27px; border-radius: 50%;
-  border: 2px solid var(--rule);
+  flex: none; width: 30px; height: 30px; border-radius: 10px;
+  border: 2.5px solid var(--ink);
   display: grid; place-items: center;
-  transition: background-color 200ms ease, border-color 200ms ease, transform 260ms cubic-bezier(.2,1.4,.4,1);
+  background: var(--paper-shade);
+  transition: background-color 200ms ease, transform 260ms var(--spring);
 }
-.stamp svg { width: 15px; height: 15px; opacity: 0; transform: scale(.5); transition: opacity 160ms ease, transform 200ms ease; }
+.stamp svg { width: 17px; height: 17px; opacity: 0; transform: scale(.3); transition: opacity 140ms ease, transform 220ms var(--spring); }
 
 .row[aria-pressed="true"] .stamp {
-  background: var(--saffron); border-color: var(--saffron); transform: scale(1.06);
+  background: var(--butter); transform: scale(1.12) rotate(-4deg);
 }
-.row[aria-pressed="true"] .stamp svg { opacity: 1; transform: scale(1); }
+.row[aria-pressed="true"] .stamp svg { opacity: 1; transform: scale(1) rotate(4deg); }
 .row[aria-pressed="true"] .row-label { color: var(--ink-faint); }
 
 .row-label { flex: 1; }
-.row-meta { font-size: 0.8125rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.row-meta { font-size: .8125rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+/* Floating +XP reward, re-triggered per check by re-keying the span. */
+.xp-pop {
+  position: absolute;
+  left: 2.6rem; top: -.35rem;
+  z-index: 1;
+  white-space: nowrap;
+  font-family: var(--display); font-weight: 700; font-size: .875rem;
+  color: #22223B;
+  background: var(--butter);
+  border: 2px solid var(--ink); border-radius: 999px;
+  padding: .05rem .6rem;
+  pointer-events: none;
+  animation: xp-float 850ms var(--spring) forwards;
+}
+@keyframes xp-float {
+  0%   { opacity: 0; transform: translateY(6px) scale(.6); }
+  25%  { opacity: 1; transform: translateY(-4px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-26px) scale(1); }
+}
+
+/* CSS confetti burst over the card when everything is done. */
+.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+.confetti i {
+  position: absolute; top: -12px; width: 9px; height: 13px; border-radius: 2px;
+  animation: confetti-fall var(--dur) ease-in var(--delay) forwards;
+  opacity: 0;
+}
+@keyframes confetti-fall {
+  0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(340px) translateX(var(--sway)) rotate(var(--spin)); }
+}
 
 .tally {
-  font-family: var(--serif); font-size: 0.9375rem; color: var(--ink-soft);
-  margin: 0; padding-top: 0.9rem; border-top: 1px solid var(--rule);
+  font-weight: 600; font-size: .9375rem; color: var(--ink-soft);
+  margin: .5rem 0 0; padding-top: .9rem; border-top: 2px solid var(--rule);
 }
-.tally b { color: var(--green); font-weight: 600; }
+.tally b { color: var(--ink); font-weight: 700; background: var(--butter); border-radius: 8px; padding: .05em .4em; box-decoration-break: clone; }
+
+/* The hero mascot reacts when the demo day is complete. */
+.mascot { display: flex; justify-content: center; margin: -.25rem 0 .6rem; }
+.mascot svg { width: 88px; height: 64px; display: block; }
 
 /* ---------- ruled sections ---------- */
 
-/* Sections each sit in their own .shell, so the rule goes on the band
-   itself. It then aligns with the content rather than bleeding full-width. */
 .band {
   padding-block: clamp(2.25rem, 6vw, 3.75rem);
-  border-top: 1px solid var(--rule);
+  border-top: 2px solid var(--rule);
 }
-/* No hairline directly under the green field. */
 .band--flush { border-top: 0; }
 
 .band > h2 {
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
   margin-bottom: 2rem; max-width: 26ch;
 }
 
-/* A ledger of claims, not a grid of cards. */
-.entries { border-top: 1px solid var(--rule); }
+.entries { border-top: 2px solid var(--rule); }
 
 .entry {
-  display: grid; gap: 0.25rem 2.5rem;
+  display: grid; gap: .25rem 2.5rem;
   grid-template-columns: minmax(9rem, 14rem) 1fr;
   padding-block: 1.4rem;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
   align-items: baseline;
 }
-.entry dt { font-family: var(--serif); font-size: 1.0625rem; }
+.entry dt { font-family: var(--display); font-weight: 600; font-size: 1.125rem; }
 .entry dd { margin: 0; color: var(--ink-soft); max-width: 52ch; }
 
 @media (max-width: 34rem) {
-  .entry { grid-template-columns: 1fr; gap: 0.35rem; }
+  .entry { grid-template-columns: 1fr; gap: .35rem; }
 }
 
-/* ---------- the one bold moment: privacy ---------- */
+/* ---------- the one bold moment: privacy, in ink ---------- */
 
-.pledge { background: var(--green); color: var(--on-green); }
+.pledge { background: var(--ink); color: var(--on-ink); }
 .pledge .shell { padding-block: clamp(2.75rem, 8vw, 4.5rem); }
-.pledge h2 { font-size: clamp(1.5rem, 4.5vw, 2.125rem); max-width: 22ch; margin-bottom: 1.25rem; }
-.pledge p { max-width: 50ch; margin: 0 0 1.5rem; opacity: .92; }
-.pledge a { color: var(--on-green); }
+.pledge h2 { font-size: clamp(1.6rem, 4.5vw, 2.25rem); font-weight: 700; max-width: 24ch; margin-bottom: 1.25rem; }
+.pledge p { max-width: 50ch; margin: 0 0 1.5rem; opacity: .9; }
+.pledge a { color: var(--on-ink); text-decoration-color: var(--saffron); }
 .pledge .facts { list-style: none; padding: 0; margin: 0 0 1.75rem; max-width: 40rem; }
-.pledge .facts li {
-  padding: 0.7rem 0; border-top: 1px solid rgba(255,251,242,.22);
-}
-.pledge .facts li:last-child { border-bottom: 1px solid rgba(255,251,242,.22); }
+.pledge .facts li { padding: .7rem 0; border-top: 2px solid rgba(245, 243, 255, .2); }
+.pledge .facts li:last-child { border-bottom: 2px solid rgba(245, 243, 255, .2); }
 
 /* ---------- footer ---------- */
 
-.foot { padding-block: 2.5rem 3.5rem; color: var(--ink-faint); font-size: 0.9375rem; }
-.foot nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; margin-bottom: 1.25rem; }
+.foot { padding-block: 2.5rem 3.5rem; color: var(--ink-faint); font-size: .9375rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: .75rem 1.75rem; margin-bottom: 1.25rem; }
 .foot p { margin: 0; max-width: 50ch; }
 
 /* ---------- prose (privacy policy) ---------- */
 
 .prose { padding-block: clamp(2rem, 6vw, 3.5rem) 4rem; max-width: 42rem; }
-.prose h1 { font-size: clamp(1.625rem, 4.5vw, 2.25rem); margin-bottom: 0.5rem; }
-.prose .updated { color: var(--ink-faint); font-size: 0.9375rem; margin: 0 0 2.5rem; }
+.prose h1 { font-size: clamp(1.75rem, 4.5vw, 2.5rem); font-weight: 700; margin-bottom: .5rem; }
+.prose .updated { color: var(--ink-faint); font-size: .9375rem; margin: 0 0 2.5rem; }
 .prose h2 {
-  font-size: 1.1875rem; margin: 2.5rem 0 0.75rem;
-  padding-top: 1.5rem; border-top: 1px solid var(--rule);
+  font-size: 1.35rem; font-weight: 600; margin: 2.5rem 0 .75rem;
+  padding-top: 1.5rem; border-top: 2px solid var(--rule);
 }
 .prose p, .prose li { color: var(--ink-soft); }
 .prose ul { padding-inline-start: 1.15rem; }
-.prose li { margin-bottom: 0.5rem; }
-.prose strong { color: var(--ink); font-weight: 600; }
+.prose li { margin-bottom: .5rem; }
+.prose strong { color: var(--ink); font-weight: 700; }
 .prose code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.875em; background: var(--paper-shade);
-  padding: 0.1em 0.35em; border-radius: 4px;
+  font-size: .875em; background: var(--paper-shade);
+  border: 1px solid var(--rule);
+  padding: .1em .35em; border-radius: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -268,26 +388,27 @@ a.soon:hover { border-color: var(--green); color: var(--green); }
 
 /* ---------- reading library ---------- */
 
-.library-title { font-size: clamp(1.75rem, 5vw, 2.5rem); margin-bottom: 1rem; }
+.library-title { font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
 
 /* The corpus is numbered 01–86 in the app, so the numbers carry real
    information here rather than decorating the list. */
-.index { list-style: none; margin: 2rem 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.index { list-style: none; margin: 2rem 0 0; padding: 0; border-top: 2px solid var(--rule); }
 
-.index-row { border-bottom: 1px solid var(--rule); }
+.index-row { border-bottom: 2px solid var(--rule); }
 .index-row a {
-  display: grid; align-items: baseline; gap: 0.15rem 1.25rem;
+  display: grid; align-items: baseline; gap: .15rem 1.25rem;
   grid-template-columns: 2.5rem 1fr auto;
-  padding: 1rem 0.35rem; text-decoration: none; color: inherit;
-  border-radius: 8px;
+  padding: 1rem .6rem; text-decoration: none; color: inherit;
+  border-radius: 12px;
+  transition: background-color 160ms ease, transform 140ms var(--spring);
 }
-.index-row a:hover { background: var(--paper-shade); }
+.index-row a:hover { background: var(--paper-shade); border-radius: 12px; box-shadow: 4px 4px 0 var(--shadow); transform: translate(-1px, -1px); }
 
-.index-num { font-family: var(--serif); color: var(--ink-faint); font-size: 0.9375rem; }
-.index-titles { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-.index-titles b { font-family: var(--serif); font-weight: 600; }
-.index-titles i { font-style: normal; font-size: 0.875rem; color: var(--ink-faint); }
-.index-min { font-size: 0.8125rem; color: var(--ink-faint); white-space: nowrap; }
+.index-num { font-family: var(--display); font-weight: 600; color: var(--ink-faint); font-size: .9375rem; }
+.index-titles { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+.index-titles b { font-family: var(--display); font-weight: 600; }
+.index-titles i { font-style: normal; font-size: .875rem; color: var(--ink-faint); }
+.index-min { font-size: .8125rem; color: var(--ink-faint); white-space: nowrap; }
 
 @media (max-width: 30rem) {
   .index-row a { grid-template-columns: 2rem 1fr; }
@@ -298,54 +419,64 @@ a.soon:hover { border-color: var(--green); color: var(--green); }
 
 .article { max-width: 40rem; }
 .article .kicker {
-  font-size: 0.9375rem; color: var(--ink-faint); margin: 0 0 0.4rem;
+  font-size: .9375rem; color: #22223B; margin: 0 0 .8rem;
+  box-shadow: 2px 2px 0 var(--shadow);
 }
-.article h1 { font-size: clamp(1.625rem, 4.5vw, 2.25rem); margin-bottom: 0.5rem; }
+.article h1 { font-size: clamp(1.75rem, 4.5vw, 2.5rem); font-weight: 700; margin-bottom: .5rem; }
 .article p, .article li { color: var(--ink-soft); }
 .article > p { margin: 0 0 1.15rem; }
 
 .pager {
   display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid var(--rule);
 }
-.pager a { display: flex; flex-direction: column; gap: 0.2rem; text-decoration: none; }
+.pager a {
+  display: flex; flex-direction: column; gap: .2rem; text-decoration: none;
+  background: var(--paper-shade); border: 2px solid var(--ink); border-radius: 16px;
+  padding: .8rem 1rem; box-shadow: 4px 4px 0 var(--shadow);
+  transition: transform 140ms var(--spring), box-shadow 140ms var(--spring), background-color 160ms ease;
+}
+.pager a:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--shadow); }
 .pager-next { text-align: end; }
-.pager-dir { font-size: 0.8125rem; color: var(--ink-faint); }
-.pager-title { font-family: var(--serif); color: var(--green); }
-.pager a:hover .pager-title { color: var(--ink); }
+.pager-dir { font-size: .8125rem; color: var(--ink-faint); }
+.pager-title { font-family: var(--display); font-weight: 600; color: var(--ink); }
 
 /* ---------- download ---------- */
 
 .download { max-width: 42rem; }
-.download h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); margin-bottom: 1rem; }
+.download h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
 .download h2 {
-  font-size: 1.1875rem; margin: 2.75rem 0 0.9rem;
-  padding-top: 1.75rem; border-top: 1px solid var(--rule);
+  font-size: 1.35rem; font-weight: 600; margin: 2.75rem 0 .9rem;
+  padding-top: 1.75rem; border-top: 2px solid var(--rule);
 }
 .download p { color: var(--ink-soft); }
 
 .release-pending, .release-ready { margin: 2rem 0 0; }
-.release-ready .btn { margin-bottom: 0.9rem; }
+.release-ready .btn { margin-bottom: .9rem; }
 
 .hash {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
-  margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 1px solid var(--rule);
-  font-size: 0.8125rem;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem;
+  margin: 1.1rem 0 0; padding: .9rem 1rem;
+  background: var(--paper-shade); border: 2px solid var(--ink); border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--shadow);
+  font-size: .8125rem;
 }
 .hash span { color: var(--ink-faint); }
 .hash code { word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .steps { padding-inline-start: 1.25rem; }
-.steps li { margin-bottom: 0.7rem; color: var(--ink-soft); }
+.steps li { margin-bottom: .7rem; color: var(--ink-soft); }
 
 .download code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.875em; background: var(--paper-shade);
-  padding: 0.1em 0.35em; border-radius: 4px;
+  font-size: .875em; background: var(--paper-shade);
+  border: 1px solid var(--rule);
+  padding: .1em .35em; border-radius: 6px;
 }
 .cmd {
-  background: var(--paper-shade); border: 1px solid var(--rule);
-  border-radius: 10px; padding: 0.85rem 1rem; overflow-x: auto;
-  font-size: 0.875rem; margin: 0 0 1.25rem;
+  background: var(--paper-shade); border: 2px solid var(--ink); border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--shadow);
+  padding: .85rem 1rem; overflow-x: auto;
+  font-size: .875rem; margin: 0 0 1.25rem;
 }
-.cmd code { background: none; padding: 0; }
+.cmd code { background: none; padding: 0; border: 0; }
